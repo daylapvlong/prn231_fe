@@ -8,12 +8,6 @@ import CustomToggle from '../../../dropdowns'
 import HorizontalNav from '../HeaderStyle/horizontal-nav'
 
 //img 
-import flag1 from '../../../../assets/images/Flag/flag001.png'
-import flag2 from '../../../../assets/images/Flag/flag-02.png'
-import flag3 from '../../../../assets/images/Flag/flag-03.png'
-import flag4 from '../../../../assets/images/Flag/flag-04.png'
-import flag5 from '../../../../assets/images/Flag/flag-05.png'
-import flag6 from '../../../../assets/images/Flag/flag-06.png'
 import avatars1 from '../../../../assets/images/avatars/01.png'
 import avatars2 from '../../../../assets/images/avatars/avtar_1.png'
 import avatars3 from '../../../../assets/images/avatars/avtar_2.png'

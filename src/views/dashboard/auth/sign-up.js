@@ -1,13 +1,9 @@
 import React from 'react'
-import { Row, Col, Image, Form, Button, ListGroup } from 'react-bootstrap'
+import { Row, Col, Image, Form, Button } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import Card from '../../../components/Card'
 
 // img
-import facebook from '../../../assets/images/brands/fb.svg'
-import google from '../../../assets/images/brands/gm.svg'
-import instagram from '../../../assets/images/brands/im.svg'
-import linkedin from '../../../assets/images/brands/li.svg'
 import auth5 from '../../../assets/images/auth/05.png'
 
 const SignUp = () => {

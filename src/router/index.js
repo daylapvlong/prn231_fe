@@ -8,7 +8,7 @@ import UserAdd from '../views/dashboard/app/user-add';
 import UserList from '../views/dashboard/app/user-list';
 import Billing from '../views/dashboard/special-pages/billing';
 import Admin from '../views/dashboard/admin/admin';
-
+import QuizPage from '../views/dashboard/quiz'
 
 export const IndexRouters = [
     {
@@ -51,6 +51,10 @@ export const IndexRouters = [
                 path: '/quiz-list',
                 element: <BootstrapTable />
             },
+            {
+                path: '/quiz',
+                element: <QuizPage />
+            },
         ]
     },
     {
@@ -61,8 +65,4 @@ export const IndexRouters = [
         path: '/auth/sign-up',
         element: <SignUp />
     },
-    // {
-    //     path: '/',
-    //     element: <BoxedFancy />
-    // },
 ]
