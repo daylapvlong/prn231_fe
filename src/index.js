@@ -10,23 +10,32 @@ import { Provider } from "react-redux";
 //reducer
 import { store } from "./store";
 
-import BoxedFancy from "./layouts/dashboard/boxed-fancy"
+import { MantineProvider } from "@mantine/core";
+
+import BoxedFancy from "./layouts/dashboard/boxed-fancy";
 import { IndexRouters } from "./router";
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <BoxedFancy />,
-  },
-  ...IndexRouters,
-] ,{basename: process.env.PUBLIC_URL });
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <BoxedFancy />,
+    },
+    ...IndexRouters,
+  ],
+  { basename: process.env.PUBLIC_URL }
+);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store}>
-      <App>
-        <RouterProvider router={router}></RouterProvider>
-      </App>
+      <MantineProvider withGlobalStyles withNormalizeCSS>
+        {" "}
+        {/* Add MantineProvider */}
+        <App>
+          <RouterProvider router={router} />
+        </App>
+      </MantineProvider>
     </Provider>
   </React.StrictMode>
 );

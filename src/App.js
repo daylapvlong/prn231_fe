@@ -7,6 +7,7 @@ import "./assets/scss/custom.scss"
 import "./assets/scss/dark.scss"
 import "./assets/scss/rtl.scss"
 import "./assets/scss/customizer.scss"
+import './index.css'
 
 // Redux Selector / Action
 import { useDispatch } from 'react-redux';
