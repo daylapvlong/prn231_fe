@@ -47,23 +47,25 @@ export default function QuizPage() {
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
       <div className="w-full md:w-1/4 p-4 bg-white shadow-md">
         <h2 className="text-xl font-bold mb-4">All Questions</h2>
-        <div className="space-y-2">
-          {questions.map((question, index) => (
-            <button
-              key={index}
-              onClick={() => goToQuestion(index)}
-              className={`w-full p-2 text-left rounded-lg transition duration-300 ${
-                answeredQuestions[index]
-                  ? "bg-green-200 hover:bg-green-300"
-                  : "bg-gray-200 hover:bg-gray-300"
-              } ${currentQuestion === index ? "ring-2 ring-blue-500" : ""}`}
-            >
-              Question {index + 1}
-              {answeredQuestions[index] && (
-                <span className="ml-2 text-green-600">✓</span>
-              )}
-            </button>
-          ))}
+        <div className="h-[calc(100vh-200px)] overflow-y-auto p-2 mb-4">
+          <div className="space-y-2">
+            {questions.map((question, index) => (
+              <button
+                key={index}
+                onClick={() => goToQuestion(index)}
+                className={`w-full p-2 text-left rounded-lg transition duration-300 ${
+                  answeredQuestions[index]
+                    ? "bg-green-200 hover:bg-green-300"
+                    : "bg-gray-200 hover:bg-gray-300"
+                } ${currentQuestion === index ? "ring-2 ring-blue-500" : ""}`}
+              >
+                Question {index + 1}
+                {answeredQuestions[index] && (
+                  <span className="ml-2 text-green-600">✓</span>
+                )}
+              </button>
+            ))}
+          </div>
         </div>
         <button
           onClick={handleSubmit}
