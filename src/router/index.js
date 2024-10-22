@@ -49,7 +49,7 @@ export const IndexRouters = [
         element: <UserList />,
       },
       {
-        path: "/quiz-browse",
+        path: "/home",
         element: <QuizBrowse />,
       },
       {

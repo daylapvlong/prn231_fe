@@ -32,7 +32,7 @@ const SignIn = () => {
       HandleIsAuthenticated();
 
       // Redirect to home or dashboard after successful login
-      navigate("/"); // Redirect using useNavigate
+      navigate("/home"); // Redirect using useNavigate
     } catch (err) {
       setError("Invalid credentials");
       console.error(
@@ -52,7 +52,7 @@ const SignIn = () => {
                 <Card className="card-transparent shadow-none d-flex justify-content-center mb-0 auth-card">
                   <Card.Body>
                     <Link
-                      to="/"
+                      to="/home"
                       className="navbar-brand d-flex align-items-center mb-3"
                     >
                       <svg

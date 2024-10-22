@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
-import axios from "axios"; // Import Axios
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function BrowseCourses() {
   const [courses, setCourses] = useState([]);
@@ -7,24 +8,7 @@ export default function BrowseCourses() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Function to fetch courses based on the search term
-  const fetchCoursesByName = async (name) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await axios.get(
-        `http://localhost:5037/api/Course/GetCourseByNameBrowse?name=${encodeURIComponent(
-          name
-        )}`
-      );
-      setCourses(response.data); // Assuming the response is a JSON array
-    } catch (err) {
-      setError(err.response?.data?.message || err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const navigate = useNavigate();
 
   // Effect to fetch all courses when the component mounts
   useEffect(() => {
@@ -129,9 +113,7 @@ export default function BrowseCourses() {
             <div className="px-6 pb-4">
               <button
                 className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out"
-                onClick={() =>
-                  console.log(`Starting course: ${course.courseName}`)
-                }
+                onClick={() => navigate(`/quiz?courseId=${course.id}`)}
               >
                 Start Course
               </button>

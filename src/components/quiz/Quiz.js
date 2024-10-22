@@ -1,13 +1,48 @@
 import React, { useState, useEffect } from "react";
-import questions from "./QuestionBank";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function QuizPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const queryParams = new URLSearchParams(location.search);
+  const courseId = queryParams.get("courseId");
+
+  const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [showScore, setShowScore] = useState(false);
   const [score, setScore] = useState(0);
   const [answeredQuestions, setAnsweredQuestions] = useState(
     new Array(questions.length).fill(false)
   );
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch questions from API
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      if (courseId) {
+        try {
+          setIsLoading(true);
+          const response = await axios.get(
+            "http://localhost:5037/api/Question/GetQuestionByCourse",
+            {
+              params: {
+                courseID: courseId,
+              },
+            }
+          );
+          setQuestions(response.data);
+          setAnsweredQuestions(new Array(response.data.length).fill(false));
+        } catch (error) {
+          console.error("Error fetching questions:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchQuestions();
+  }, [courseId]);
 
   const handleSubmit = () => {
     setShowScore(true);
@@ -15,7 +50,7 @@ export default function QuizPage() {
 
   const handleAnswerOptionClick = (isCorrect) => {
     if (isCorrect) {
-      setScore(score + 1);
+      setScore((prevScore) => prevScore + 1);
     }
 
     setAnsweredQuestions((prev) => {
@@ -41,7 +76,33 @@ export default function QuizPage() {
     setCurrentQuestion(index);
   };
 
+  const handleGoBack = () => {
+    navigate("/home"); // Navigate to /home
+  };
+
   const allQuestionsAnswered = answeredQuestions.every(Boolean);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="text-2xl font-semibold">Loading...</div>
+      </div>
+    );
+  }
+
+  if (questions.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+        <div className="bg-white rounded-lg shadow-md p-8 text-center">
+          <h2 className="text-2xl font-bold mb-4">No Questions Available</h2>
+          <p className="text-gray-600 mb-6">
+            There are currently no questions available for this course.
+          </p>
+          <button onClick={handleGoBack}>Go Back</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
@@ -112,10 +173,10 @@ export default function QuizPage() {
                 </div>
               </div>
               <h3 className="text-lg font-medium mb-4">
-                {questions[currentQuestion].questionText}
+                {questions[currentQuestion]?.questionText}
               </h3>
               <div className="space-y-2">
-                {questions[currentQuestion].answerOptions.map(
+                {questions[currentQuestion]?.options.map(
                   (answerOption, index) => (
                     <button
                       key={index}
@@ -124,7 +185,7 @@ export default function QuizPage() {
                       }
                       className="w-full p-3 text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-300"
                     >
-                      {answerOption.answerText}
+                      {answerOption.optionText}
                     </button>
                   )
                 )}

@@ -27,7 +27,7 @@ const HeaderStyle = memo(() => {
         <Container fluid className="navbar-inner">
           <MobildeOffcanvas />
           <Navbar.Brand as="div" className="col-lg-3">
-            <Link to="/dashboard" className="d-flex">
+            <Link to="/home" className="d-flex">
               <Logo color={true} />
               <h4 className="logo-title">Hope UI</h4>
             </Link>
