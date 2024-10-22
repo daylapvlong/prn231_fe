@@ -1,28 +1,26 @@
-//router
-// import IndexRouters from "./router/index"
-
-//scss
-import "./assets/scss/hope-ui.scss"
-import "./assets/scss/custom.scss"
-import "./assets/scss/dark.scss"
-import "./assets/scss/rtl.scss"
-import "./assets/scss/customizer.scss"
-import './index.css'
+import React, { useEffect } from "react";
+import "./assets/scss/hope-ui.scss";
+import "./index.css";
 
 // Redux Selector / Action
-import { useDispatch } from 'react-redux';
+import { useDispatch } from "react-redux";
 
-// import state selectors
-import { setSetting } from './store/setting/actions'
+// Import state selectors
+import { setSetting } from "./store/setting/actions";
+import { AuthProvider } from "./components/auth"; // Import your AuthContext
 
-function App({children}) {
-  const dispatch = useDispatch()
-  dispatch(setSetting())
+function App({ children }) {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Dispatching setting action when the component mounts
+    dispatch(setSetting());
+  }, [dispatch]);
+
   return (
     <div className="App">
-      {/* <IndexRouters /> */}
-      {children}
-      
+      {/* Wrap your application with AuthProvider */}
+      <AuthProvider>{children}</AuthProvider>
     </div>
   );
 }

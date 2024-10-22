@@ -1,14 +1,14 @@
 import React from "react";
-import QuizContainer from "../../../components/quiz/QuizContainer";
+import QuizPage from "../../../components/quiz/Quiz";
 
-const QuizPage = () => {
+const QuizTaker = () => {
   return (
     <>
       <div className="z-10">
-        <QuizContainer />
+        <QuizPage />
       </div>
     </>
   );
 };
 
-export default QuizPage;
+export default QuizTaker;
