@@ -89,6 +89,7 @@ export default function QuizPage() {
   };
 
   const allQuestionsAnswered = answeredQuestions.every(Boolean);
+  const completedQuestionsCount = answeredQuestions.filter(Boolean).length;
 
   if (isLoading) {
     return (
@@ -235,7 +236,7 @@ export default function QuizPage() {
                     className="h-full bg-blue-500 rounded-full"
                     style={{
                       width: `${
-                        ((currentQuestion + 1) / questions.length) * 100
+                        (completedQuestionsCount / questions.length) * 100
                       }%`,
                     }}
                   ></div>
