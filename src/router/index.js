@@ -10,6 +10,7 @@ import Billing from "../views/dashboard/special-pages/billing";
 import Admin from "../views/dashboard/admin/admin";
 import QuizBrowse from "../views/dashboard/quiz/browse";
 import QuizTaker from "../views/dashboard/quiz";
+import QuizDetail from "../views/dashboard/quiz/detail";
 
 export const IndexRouters = [
   {
@@ -59,6 +60,10 @@ export const IndexRouters = [
       {
         path: "/quiz",
         element: <QuizTaker />,
+      },
+      {
+        path: "/quiz-detail",
+        element: <QuizDetail />,
       },
     ],
   },
