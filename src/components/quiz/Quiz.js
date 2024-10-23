@@ -12,12 +12,10 @@ export default function QuizPage() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [showScore, setShowScore] = useState(false);
   const [score, setScore] = useState(0);
-  const [answeredQuestions, setAnsweredQuestions] = useState(
-    new Array(questions.length).fill(false)
-  );
+  const [answeredQuestions, setAnsweredQuestions] = useState([]);
+  const [selectedAnswers, setSelectedAnswers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch questions from API
   useEffect(() => {
     const fetchQuestions = async () => {
       if (courseId) {
@@ -33,6 +31,7 @@ export default function QuizPage() {
           );
           setQuestions(response.data);
           setAnsweredQuestions(new Array(response.data.length).fill(false));
+          setSelectedAnswers(new Array(response.data.length).fill(null));
         } catch (error) {
           console.error("Error fetching questions:", error);
         } finally {
@@ -48,10 +47,12 @@ export default function QuizPage() {
     setShowScore(true);
   };
 
-  const handleAnswerOptionClick = (isCorrect) => {
-    if (isCorrect) {
-      setScore((prevScore) => prevScore + 1);
-    }
+  const handleAnswerOptionClick = (answerOption, index) => {
+    setSelectedAnswers((prev) => {
+      const newSelectedAnswers = [...prev];
+      newSelectedAnswers[currentQuestion] = index;
+      return newSelectedAnswers;
+    });
 
     setAnsweredQuestions((prev) => {
       const newAnswered = [...prev];
@@ -59,10 +60,16 @@ export default function QuizPage() {
       return newAnswered;
     });
 
-    const nextQuestion = currentQuestion + 1;
-    if (nextQuestion < questions.length) {
-      setCurrentQuestion(nextQuestion);
+    if (answerOption.isCorrect) {
+      setScore((prevScore) => prevScore + 1);
     }
+
+    setTimeout(() => {
+      const nextQuestion = currentQuestion + 1;
+      if (nextQuestion < questions.length) {
+        setCurrentQuestion(nextQuestion);
+      }
+    }, 500);
   };
 
   const restartQuiz = () => {
@@ -70,6 +77,7 @@ export default function QuizPage() {
     setShowScore(false);
     setScore(0);
     setAnsweredQuestions(new Array(questions.length).fill(false));
+    setSelectedAnswers(new Array(questions.length).fill(null));
   };
 
   const goToQuestion = (index) => {
@@ -77,7 +85,7 @@ export default function QuizPage() {
   };
 
   const handleGoBack = () => {
-    navigate("/home"); // Navigate to /home
+    navigate("/home");
   };
 
   const allQuestionsAnswered = answeredQuestions.every(Boolean);
@@ -106,9 +114,9 @@ export default function QuizPage() {
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
-      <div className="w-full md:w-1/4 p-4 bg-white shadow-md">
+      <div className="h-[calc(100vh-350px)] w-full md:w-1/4 p-4 bg-white shadow-md">
         <h2 className="text-xl font-bold mb-4">All Questions</h2>
-        <div className="h-[calc(100vh-200px)] overflow-y-auto p-2 mb-4">
+        <div className="overflow-y-auto p-2 mb-4">
           <div className="space-y-2">
             {questions.map((question, index) => (
               <button
@@ -131,7 +139,7 @@ export default function QuizPage() {
         <button
           onClick={handleSubmit}
           disabled={!allQuestionsAnswered}
-          className={`w-full mt-4 p-2 rounded-lg transition duration-300 ${
+          className={`w-full py-2 px-4 rounded-lg transition duration-300 ${
             allQuestionsAnswered
               ? "bg-blue-500 text-white hover:bg-blue-600"
               : "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -140,23 +148,84 @@ export default function QuizPage() {
           Submit Quiz
         </button>
       </div>
-      <div className="flex-1 p-6">
-        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
-          {showScore ? (
-            <div className="text-center">
-              <h2 className="text-2xl font-bold mb-4">Quiz Completed!</h2>
-              <p className="text-xl mb-4">
+
+      {showScore ? (
+        <div className="flex-1 p-6 overflow-y-auto">
+          <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+            <div>
+              <h2 className="text-2xl font-bold mb-4 text-center">
+                Quiz Completed!
+              </h2>
+              <p className="text-xl mb-6 text-center">
                 You scored {score} out of {questions.length}
               </p>
-              <button
-                onClick={restartQuiz}
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
-              >
-                Restart Quiz
-              </button>
+              <div className="space-y-6">
+                {questions.map((question, questionIndex) => (
+                  <div
+                    key={questionIndex}
+                    className="border-b pb-4 last:border-b-0"
+                  >
+                    <h3 className="text-lg font-medium mb-2">
+                      Question {questionIndex + 1}: {question.questionText}
+                    </h3>
+                    <div className="space-y-2">
+                      {question.options.map((option, optionIndex) => {
+                        const isSelected =
+                          selectedAnswers[questionIndex] === optionIndex;
+                        const isCorrect = option.isCorrect;
+                        const isWrongAnswer = isSelected && !isCorrect;
+
+                        return (
+                          <div
+                            key={optionIndex}
+                            className={`p-2 rounded-lg ${
+                              isCorrect
+                                ? "bg-green-100 border-green-500"
+                                : isWrongAnswer
+                                ? "bg-red-100 border-red-500"
+                                : "bg-gray-100"
+                            } ${isSelected || isCorrect ? "border-2" : ""}`}
+                          >
+                            <p className={isCorrect ? "font-semibold" : ""}>
+                              {option.optionText}
+                            </p>
+                            {isCorrect && (
+                              <span className="text-green-600 text-sm">
+                                Correct Answer
+                              </span>
+                            )}
+                            {isWrongAnswer && (
+                              <span className="text-red-600 text-sm">
+                                Your Answer (Incorrect)
+                              </span>
+                            )}
+                            {isSelected && isCorrect && (
+                              <span className="text-green-600 text-sm">
+                                Your Answer (Correct)
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-6 text-center">
+                <button
+                  onClick={restartQuiz}
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
+                >
+                  Restart Quiz
+                </button>
+              </div>
             </div>
-          ) : (
-            <>
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className="h-[calc(100vh-500px)] flex-1 p-6 overflow-y-auto">
+            <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
               <div className="mb-4">
                 <h2 className="text-xl font-semibold">
                   Question {currentQuestion + 1}/{questions.length}
@@ -181,19 +250,23 @@ export default function QuizPage() {
                     <button
                       key={index}
                       onClick={() =>
-                        handleAnswerOptionClick(answerOption.isCorrect)
+                        handleAnswerOptionClick(answerOption, index)
                       }
-                      className="w-full p-3 text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-300"
+                      className={`w-full p-3 text-left rounded-lg transition duration-300 ${
+                        selectedAnswers[currentQuestion] === index
+                          ? "bg-blue-500 text-white"
+                          : "bg-gray-100 hover:bg-gray-200"
+                      }`}
                     >
                       {answerOption.optionText}
                     </button>
                   )
                 )}
               </div>
-            </>
-          )}
-        </div>
-      </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
