@@ -115,7 +115,7 @@ export default function QuizPage() {
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
-      <div className="h-[calc(100vh-350px)] w-full md:w-1/4 p-4 bg-white shadow-md">
+      <div className="h-[calc(100vh-100px)] w-full md:w-1/4 p-4 bg-white shadow-md">
         <h2 className="text-xl font-bold mb-4">All Questions</h2>
         <div className="overflow-y-auto p-2 mb-4">
           <div className="space-y-2">
@@ -225,7 +225,7 @@ export default function QuizPage() {
         </div>
       ) : (
         <>
-          <div className="h-[calc(100vh-500px)] flex-1 p-6 overflow-y-auto">
+          <div className="h-[calc(100vh-100px)] flex-1 p-6 overflow-y-auto">
             <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
               <div className="mb-4">
                 <h2 className="text-xl font-semibold">

@@ -113,7 +113,7 @@ export default function BrowseCourses() {
             <div className="px-6 pb-4">
               <button
                 className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out"
-                onClick={() => navigate(`/quiz?courseId=${course.id}`)}
+                onClick={() => navigate(`/quiz-detail?courseId=${course.id}`)}
               >
                 Start Course
               </button>

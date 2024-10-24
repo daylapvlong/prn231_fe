@@ -10,7 +10,7 @@ const Flashcard = ({ question, answer }) => {
 
   return (
     <div
-      className="w-72 h-48 perspective-1000 cursor-pointer"
+      className="w-96 h-72 perspective-1000 cursor-pointer"
       onClick={handleClick}
     >
       <div
@@ -18,7 +18,7 @@ const Flashcard = ({ question, answer }) => {
           isFlipped ? "rotate-y-180" : ""
         }`}
       >
-        <div className="absolute w-full h-full backface-hidden bg-gray-100 flex items-center justify-center p-4 rounded-lg shadow-md">
+        <div className="absolute w-full h-full backface-hidden bg-gray-100 flex items-center justify-center p-4 rounded-lg shadow-2xl">
           <p className="text-lg text-center">{question}</p>
         </div>
         <div className="absolute w-full h-full backface-hidden bg-gray-200 flex items-center justify-center p-4 rounded-lg shadow-md rotate-y-180">
