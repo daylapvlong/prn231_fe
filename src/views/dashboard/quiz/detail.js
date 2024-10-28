@@ -1,17 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import FlashcardDeck from "../../../components/quiz/QuizCard";
-import {
-  Users,
-  Star,
-  BookOpen,
-  Play,
-  RotateCcw,
-  Settings,
-  Maximize,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { Users, Star, BookOpen, Play, RotateCcw, Settings } from "lucide-react";
 import axios from "axios";
 
 const QuizDetail = () => {

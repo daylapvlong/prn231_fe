@@ -18,11 +18,11 @@ const Flashcard = ({ question, answer }) => {
           isFlipped ? "rotate-y-180" : ""
         }`}
       >
-        <div className="absolute w-full h-full backface-hidden bg-gray-100 flex items-center justify-center p-4 rounded-lg shadow-2xl">
-          <p className="text-lg text-center">{question}</p>
+        <div className="absolute w-full h-full backface-hidden bg-white flex items-center justify-center p-10 rounded-lg shadow-2xl">
+          <p className="text-3xl text-center">{question}</p>
         </div>
-        <div className="absolute w-full h-full backface-hidden bg-gray-200 flex items-center justify-center p-4 rounded-lg shadow-md rotate-y-180">
-          <p className="text-lg text-center">{answer}</p>
+        <div className="absolute w-full h-full backface-hidden bg-white flex items-center justify-center p-10 rounded-lg shadow-md rotate-y-180">
+          <p className="text-3xl text-center">{answer}</p>
         </div>
       </div>
     </div>
