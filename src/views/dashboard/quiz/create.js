@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Plus, Trash2, ImageIcon, X } from "lucide-react";
 
 const QuestionForm = ({ question, onUpdate, onDelete, error }) => {
@@ -179,6 +179,28 @@ export default function CreateCourses() {
   ]);
   const [errors, setErrors] = useState({});
   const [notification, setNotification] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  useEffect(() => {
+    // Fetch categories when the component is mounted
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:5037/api/Category/GetAllCategory"
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch categories");
+        }
+        const data = await response.json();
+        setCategories(data); // Set categories to the state
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -270,8 +292,6 @@ export default function CreateCourses() {
       return;
     }
 
-    const formData = new FormData();
-
     const courseData = {
       courseName: courseName,
       publish: true,
@@ -279,7 +299,7 @@ export default function CreateCourses() {
       createdBy: 0,
       createdAt: new Date().toISOString(),
       image: courseImage ? await getBase64(courseImage) : "",
-      category: 0,
+      category: selectedCategory,
     };
 
     const questionsData = questions.map((q) => ({
@@ -296,13 +316,16 @@ export default function CreateCourses() {
     };
 
     try {
-      const response = await fetch("/api/Course/CreateCourse", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
-      });
+      const response = await fetch(
+        "http://localhost:5037/api/Course/CreateCourse",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestBody),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to create course");
@@ -378,6 +401,32 @@ export default function CreateCourses() {
           />
           {errors.courseName && (
             <p className="text-red-500 text-sm mt-1">{errors.courseName}</p>
+          )}
+        </div>
+        <div>
+          <label
+            htmlFor="category"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Course Category
+          </label>
+          <select
+            id="category"
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className={`w-full p-2 border rounded-md ${
+              errors.category ? "border-red-500" : ""
+            }`}
+          >
+            <option value="">Select a category</option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.categoryName.trim()}
+              </option>
+            ))}
+          </select>
+          {errors.category && (
+            <p className="text-red-500 text-sm mt-1">{errors.category}</p>
           )}
         </div>
         <div>

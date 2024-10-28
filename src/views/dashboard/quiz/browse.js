@@ -98,17 +98,16 @@ export default function BrowseCourses() {
                 className="mb-4"
               />{" "}
               {/* Default image if null */}
-              <h2 className="text-xl font-semibold mb-2 text-gray-800">
-                {course.courseName || "No Title Available."}{" "}
-                {/* Fallback title */}
-              </h2>
-              <p className="text-gray-600 mb-4">
-                {course.description || "No description available."}
-              </p>
-              <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700">
-                {course.categoryName?.trim() || "Uncategorized"}{" "}
-                {/* Fallback category */}
-              </span>
+              <div className="flex space-x-3">
+                <h2 className="text-xl font-semibold text-gray-800">
+                  {course.courseName || "No Title Available."}{" "}
+                  {/* Fallback title */}
+                </h2>
+                <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700">
+                  {course.categoryName?.trim() || "Uncategorized"}{" "}
+                  {/* Fallback category */}
+                </span>
+              </div>
             </div>
             <div className="px-6 pb-4">
               <button
