@@ -12,6 +12,8 @@ import QuizBrowse from "../views/dashboard/quiz/browse";
 import QuizTaker from "../views/dashboard/quiz";
 import QuizDetail from "../views/dashboard/quiz/detail";
 import CreateCourses from "../views/dashboard/quiz/create";
+import UpdateQuestion from "../views/dashboard/quiz/update";
+
 export const IndexRouters = [
   {
     path: "/",
@@ -68,6 +70,10 @@ export const IndexRouters = [
       {
         path: "/create",
         element: <CreateCourses />,
+      },
+      {
+        path: "/update",
+        element: <UpdateQuestion />,
       },
     ],
   },

@@ -22,7 +22,7 @@ export default function QuizPage() {
         try {
           setIsLoading(true);
           const response = await axios.get(
-            "http://localhost:5037/api/Question/GetQuestionByCourse",
+            "http://localhost:5038/api/Question/GetQuestionByCourse",
             {
               params: {
                 courseID: courseId,

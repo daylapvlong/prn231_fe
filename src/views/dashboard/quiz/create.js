@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { Plus, Trash2, ImageIcon, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const QuestionForm = ({ question, onUpdate, onDelete, error }) => {
   const addOption = () => {
@@ -181,13 +182,14 @@ export default function CreateCourses() {
   const [notification, setNotification] = useState(null);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch categories when the component is mounted
     const fetchCategories = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5037/api/Category/GetAllCategory"
+          "http://localhost:5038/api/Category/GetAllCategory"
         );
         if (!response.ok) {
           throw new Error("Failed to fetch categories");
@@ -202,12 +204,12 @@ export default function CreateCourses() {
     fetchCategories();
   }, []);
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragOver = (e) => {
     e.preventDefault();
     e.stopPropagation();
   };
 
-  const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
     const file = e.dataTransfer.files[0];
@@ -216,15 +218,12 @@ export default function CreateCourses() {
     }
   }, []);
 
-  const handleFileChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (file && file.type.startsWith("image/")) {
-        setCourseImage(file);
-      }
-    },
-    []
-  );
+  const handleFileChange = useCallback((e) => {
+    const file = e.target.files?.[0];
+    if (file && file.type.startsWith("image/")) {
+      setCourseImage(file);
+    }
+  }, []);
 
   const removeImage = useCallback(() => {
     setCourseImage(null);
@@ -258,10 +257,6 @@ export default function CreateCourses() {
 
     if (!courseName.trim()) {
       newErrors.courseName = "Course name is required";
-    }
-
-    if (!courseImage) {
-      newErrors.courseImage = "Course image is required";
     }
 
     questions.forEach((question, index) => {
@@ -317,7 +312,7 @@ export default function CreateCourses() {
 
     try {
       const response = await fetch(
-        "http://localhost:5037/api/Course/CreateCourse",
+        "http://localhost:5038/api/Course/CreateCourse",
         {
           method: "PUT",
           headers: {
@@ -337,6 +332,8 @@ export default function CreateCourses() {
         type: "success",
         message: "Course created successfully!",
       });
+
+      navigate("/home");
       // You might want to reset the form or redirect the user here
     } catch (error) {
       console.error("Error creating course:", error);
@@ -479,9 +476,6 @@ export default function CreateCourses() {
               )}
             </label>
           </div>
-          {errors.courseImage && (
-            <p className="text-red-500 text-sm mt-1">{errors.courseImage}</p>
-          )}
         </div>
       </div>
 

@@ -17,7 +17,7 @@ export default function BrowseCourses() {
       setError(null);
       try {
         const response = await axios.get(
-          "http://localhost:5037/api/Course/GetAllCourseBrowse"
+          "http://localhost:5038/api/Course/GetAllCourseBrowse"
         );
         setCourses(response.data); // Assuming the response is a JSON array
       } catch (err) {

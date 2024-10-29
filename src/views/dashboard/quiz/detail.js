@@ -37,7 +37,7 @@ const QuizDetail = () => {
     const fetchQuestions = async (courseId) => {
       try {
         const response = await axios.get(
-          "http://localhost:5037/api/Question/GetQuestionByCourse",
+          "http://localhost:5038/api/Question/GetQuestionByCourse",
           {
             params: { courseID: courseId },
           }
@@ -65,7 +65,7 @@ const QuizDetail = () => {
     const fetchCourse = async (courseId) => {
       try {
         const response = await axios.get(
-          "http://localhost:5037/api/Course/GetCourseByID",
+          "http://localhost:5038/api/Course/GetCourseByID",
           {
             params: { id: courseId },
           }
