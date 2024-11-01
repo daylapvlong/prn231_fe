@@ -47,6 +47,32 @@ export default function BrowseCourses() {
     );
   }, [searchTerm, selectedCategory, courses]);
 
+  const addToCart = async (courseId) => {
+    try {
+      const response = await fetch("http://localhost:5038/api/cart/addItem", {
+        method: "POST",
+        params: {
+          courseID: courseId,
+        },
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (response.status === 409) {
+        // Course already in cart
+        //alert("This course is already in your cart.");
+      } else {
+        // Other error
+        //alert("An error occurred while adding the course to the cart.");
+      }
+    } catch (error) {
+      console.error("Error adding item to cart:", error);
+      //alert("An error occurred while adding the course to the cart.");
+    }
+  };
+
   if (loading) return <p className="text-center text-gray-600">Loading...</p>;
   if (error) return <p className="text-center text-red-600">Error: {error}</p>;
 
@@ -112,7 +138,7 @@ export default function BrowseCourses() {
             <div className="px-6 pb-4">
               <button
                 className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out"
-                onClick={() => navigate(`/quiz-detail?courseId=${course.id}`)}
+                onClick={() => addToCart(course.id)}
               >
                 Start Course
               </button>
