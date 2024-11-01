@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Image, Form, Button } from "react-bootstrap";
 import Card from "../../../components/Card";
-import { useLocation } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 
 // img
 import avatars1 from "../../../assets/images/avatars/01.png";
@@ -10,9 +10,8 @@ const UserProfile = () => {
   const [notification, setNotification] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const userId = queryParams.get("userId");
+  const { fetchUserData } = useOutletContext();
+  const userId = 1;
 
   const [formData, setFormData] = useState({
     username: "",
@@ -28,30 +27,6 @@ const UserProfile = () => {
   useEffect(() => {
     fetchUserData();
   }, []);
-
-  const fetchUserData = async () => {
-    try {
-      const response = await fetch(`http://localhost:5038/api/user/${userId}`);
-      if (response.ok) {
-        const userData = await response.json();
-        setFormData({
-          ...userData,
-          password: "",
-          confirmPassword: "",
-        });
-      } else {
-        throw new Error("Failed to fetch user data");
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-      setNotification({
-        type: "error",
-        message: "Failed to load user data. Please try again.",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;

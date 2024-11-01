@@ -45,17 +45,43 @@ const Container = memo((props) => {
     }
   };
 
+  const fetchUserData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:5038/api/Login/user`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const userData = await response.json();
+        localStorage.setItem("user", JSON.stringify(userData));
+      } else {
+        throw new Error("Failed to fetch user data");
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
   useEffect(() => {
-    // Fetch cart data when the component mounts
     fetchCartData();
+    fetchUserData();
   }, []);
 
   return (
     <Fragment>
       <main className="main-content">
-        <HeaderStyle cartCount={cartCount} fetchCartData={fetchCartData} />
+        <HeaderStyle
+          cartCount={cartCount}
+          fetchCartData={fetchCartData}
+          fetchUserData={fetchUserData}
+        />
         <div className="conatiner-fluid content-inner">
-          <Router fetchCartData={fetchCartData} />
+          <Router fetchCartData={fetchCartData} fetchUserData={fetchUserData} />
         </div>
         <Footer />
       </main>

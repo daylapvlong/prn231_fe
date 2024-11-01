@@ -82,6 +82,16 @@ const BrowseCourses = () => {
     }
   };
 
+  const buyCourse = async (courseId) => {
+    try {
+      await addToCart(courseId);
+      navigate("/billing");
+    } catch (error) {
+      console.error("Error buying course:", error);
+      alert("An error occurred while trying to buy the course.");
+    }
+  };
+
   if (loading) return <p className="text-center text-gray-600">Loading...</p>;
   if (error) return <p className="text-center text-red-600">Error: {error}</p>;
 
@@ -144,12 +154,18 @@ const BrowseCourses = () => {
                 </span>
               </div>
             </div>
-            <div className="px-6 pb-4">
+            <div className="px-6 pb-4 flex space-x-2">
+              <button
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out"
+                onClick={() => buyCourse(course.id)}
+              >
+                Start Now
+              </button>
               <button
                 className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out"
                 onClick={() => addToCart(course.id)}
               >
-                Start Course
+                Add to Cart
               </button>
             </div>
           </div>

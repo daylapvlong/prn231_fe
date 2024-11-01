@@ -16,18 +16,13 @@ import avatars1 from "../../../../assets/images/avatars/01.png";
 import Logo from "../../components/logo";
 // mobile-offcanvas
 
-const HeaderStyle = memo(({ cartCount, fetchCartData }) => {
+const HeaderStyle = memo(({ cartCount, fetchCartData, fetchUserData }) => {
   const { isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
-    // Polling - Fetch cart data every 10 seconds
-    const intervalId = setInterval(() => {
-      fetchCartData();
-    }, 10000);
-
-    // Cleanup on component unmount
-    return () => clearInterval(intervalId);
-  }, [fetchCartData]);
+    fetchCartData();
+    fetchUserData();
+  }, [fetchCartData, fetchUserData]);
 
   return (
     <Fragment>
