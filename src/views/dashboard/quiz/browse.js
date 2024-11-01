@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 
-export default function BrowseCourses() {
+const BrowseCourses = () => {
   const [courses, setCourses] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { fetchCartData } = useOutletContext();
 
   // Effect to fetch all courses when the component mounts
   useEffect(() => {
@@ -49,27 +51,34 @@ export default function BrowseCourses() {
 
   const addToCart = async (courseId) => {
     try {
-      const response = await fetch("http://localhost:5038/api/cart/addItem", {
-        method: "POST",
-        params: {
-          courseID: courseId,
-        },
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
+      const cookieString = document.cookie;
+      let cartListCookie = cookieString
+        .split("; ")
+        .find((row) => row.startsWith("cartList="));
 
-      if (response.status === 409) {
-        // Course already in cart
-        //alert("This course is already in your cart.");
+      let cartList = {};
+
+      if (cartListCookie) {
+        const cartListJson = cartListCookie.split("=")[1];
+        cartList = JSON.parse(decodeURIComponent(cartListJson));
+      }
+
+      if (cartList[courseId]) {
+        alert("This course is already in your cart.");
       } else {
-        // Other error
-        //alert("An error occurred while adding the course to the cart.");
+        cartList[courseId] = { courseId };
+
+        // Set the cookie without HttpOnly, and optionally without Secure
+        document.cookie = `cartList=${encodeURIComponent(
+          JSON.stringify(cartList)
+        )}; path=/; max-age=${7 * 24 * 60 * 60};`;
+        fetchCartData();
+
+        alert("Course added to cart!");
       }
     } catch (error) {
       console.error("Error adding item to cart:", error);
-      //alert("An error occurred while adding the course to the cart.");
+      alert("An error occurred while adding the course to the cart.");
     }
   };
 
@@ -154,4 +163,6 @@ export default function BrowseCourses() {
       )}
     </div>
   );
-}
+};
+
+export default BrowseCourses;

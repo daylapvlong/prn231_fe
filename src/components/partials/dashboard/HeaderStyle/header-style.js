@@ -1,4 +1,4 @@
-import React, { memo, Fragment, useState, useEffect } from "react";
+import React, { memo, Fragment, useEffect } from "react";
 import { useAuth } from "../../../../components/auth";
 import { ShoppingCart } from "lucide-react";
 import { Navbar, Dropdown, Container, Nav } from "react-bootstrap";
@@ -15,35 +15,19 @@ import avatars1 from "../../../../assets/images/avatars/01.png";
 // logo
 import Logo from "../../components/logo";
 // mobile-offcanvas
-import MobildeOffcanvas from "../../components/mobile-offcanvas";
 
-const HeaderStyle = memo(() => {
-  const [show, setShow] = useState(true);
-  const [cartCount, setCartCount] = useState(0);
+const HeaderStyle = memo(({ cartCount, fetchCartData }) => {
   const { isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
-    // Fetch initial cart data when component mounts
-    fetchCartData();
-  }, []);
+    // Polling - Fetch cart data every 10 seconds
+    const intervalId = setInterval(() => {
+      fetchCartData();
+    }, 10000);
 
-  const fetchCartData = async () => {
-    try {
-      const response = await fetch(
-        "http://localhost:5038/api/cart/getAllItemsInCart",
-        {
-          method: "GET",
-          credentials: "include", // This is important for including cookies in the request
-        }
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setCartCount(Object.keys(data).length);
-      }
-    } catch (error) {
-      console.error("Error fetching cart data:", error);
-    }
-  };
+    // Cleanup on component unmount
+    return () => clearInterval(intervalId);
+  }, [fetchCartData]);
 
   return (
     <Fragment>
