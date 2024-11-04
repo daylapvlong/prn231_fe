@@ -10,6 +10,7 @@ import {
   RotateCcw,
   Eye,
   EyeClosed,
+  X,
 } from "lucide-react";
 import axios from "axios";
 
@@ -23,6 +24,10 @@ const QuizDetail = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [courseName, setCourseName] = useState("");
   const [hiddenChoices, setHiddenChoices] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [quizTime, setQuizTime] = useState(30);
+  const [questionCount, setQuestionCount] = useState(10);
+  const [error, setError] = useState("");
 
   // Shuffle function using Fisher-Yates algorithm
   const shuffleArray = (array) => {
@@ -38,9 +43,26 @@ const QuizDetail = () => {
     const shuffledFlashcards = shuffleArray([...flashcards]); // Make a copy of flashcards before shuffling
     setFlashcards(shuffledFlashcards);
   };
-
   const handleStartQuiz = () => {
-    navigate(`/quiz?courseId=${courseId}`);
+    setShowModal(true);
+    setQuestionCount(Math.min(10, flashcards.length)); // Set initial question count
+    setError("");
+  };
+
+  const handleStartQuizSubmit = (e) => {
+    e.preventDefault();
+    if (questionCount > flashcards.length) {
+      setError(`Maximum number of questions is ${flashcards.length}`);
+      return;
+    }
+    setShowModal(false);
+    navigate(
+      `/quiz?courseId=${courseId}&time=${quizTime}&count=${questionCount}`
+    );
+  };
+
+  const handleUpdateQuiz = () => {
+    navigate(`/update?courseId=${courseId}`);
   };
 
   const toggleHideChoices = () => {
@@ -135,26 +157,29 @@ const QuizDetail = () => {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             {[
-              { icon: BookOpen, text: "Thẻ ghi nhớ" },
               { icon: Play, text: "Take quiz" },
               { icon: RotateCcw, text: "Shuffle cards" },
               {
                 icon: hiddenChoices ? Eye : EyeClosed,
                 text: hiddenChoices ? "Show All Options" : "Hide All Options",
               },
+              { icon: BookOpen, text: "Update" },
             ].map((item, index) => (
               <button
                 key={index}
                 className="bg-white shadow-md p-4 rounded-lg flex flex-col items-center justify-center transition-colors hover:bg-blue-50"
                 onClick={() => {
-                  if (index === 1) {
+                  if (index === 0) {
                     handleStartQuiz();
                   }
-                  if (index === 2) {
+                  if (index === 1) {
                     handleShuffle();
                   }
-                  if (index === 3) {
+                  if (index === 2) {
                     toggleHideChoices();
+                  }
+                  if (index === 3) {
+                    handleUpdateQuiz();
                   }
                 }}
               >
@@ -186,6 +211,77 @@ const QuizDetail = () => {
           </div>
         </div>
       </div>
+
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl w-96">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Start Quiz</h2>
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            <form onSubmit={handleStartQuizSubmit}>
+              <div className="mb-4">
+                <label
+                  htmlFor="quizTime"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Quiz Time (minutes)
+                </label>
+                <input
+                  type="number"
+                  id="quizTime"
+                  value={quizTime}
+                  onChange={(e) => setQuizTime(Number(e.target.value))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  min="1"
+                  required
+                />
+              </div>
+              <div className="mb-6">
+                <label
+                  htmlFor="questionCount"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Number of Questions (max: {flashcards.length})
+                </label>
+                <input
+                  type="number"
+                  id="questionCount"
+                  value={questionCount}
+                  onChange={(e) => {
+                    const value = Number(e.target.value);
+                    setQuestionCount(value);
+                    if (value > flashcards.length) {
+                      setError(
+                        `Maximum number of questions is ${flashcards.length}`
+                      );
+                    } else {
+                      setError("");
+                    }
+                  }}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  min="1"
+                  max={flashcards.length}
+                  required
+                />
+              </div>
+              {error && <p className="text-red-500 mb-4">{error}</p>}
+              <button
+                type="submit"
+                className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                disabled={!!error}
+              >
+                Start Quiz
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </>
   );
 };

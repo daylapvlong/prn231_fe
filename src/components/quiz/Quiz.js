@@ -7,6 +7,8 @@ export default function QuizPage() {
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
   const courseId = queryParams.get("courseId");
+  const time = queryParams.get("time");
+  const count = queryParams.get("count");
 
   const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -15,23 +17,36 @@ export default function QuizPage() {
   const [answeredQuestions, setAnsweredQuestions] = useState([]);
   const [selectedAnswers, setSelectedAnswers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [timer, setTimer] = useState(null);
+  const [isQuizStarted, setIsQuizStarted] = useState(false);
 
   useEffect(() => {
     const fetchQuestions = async () => {
       if (courseId) {
         try {
           setIsLoading(true);
-          const response = await axios.get(
-            "http://localhost:5038/api/Question/GetQuestionByCourse",
-            {
-              params: {
-                courseID: courseId,
-              },
-            }
-          );
-          setQuestions(response.data);
-          setAnsweredQuestions(new Array(response.data.length).fill(false));
-          setSelectedAnswers(new Array(response.data.length).fill(null));
+          const response = await axios.get("http://localhost:5038/CreateQuiz", {
+            params: {
+              time: time,
+              noQuestion: count,
+              courseID: courseId,
+            },
+          });
+
+          // Log the full response to see what is being returned
+          console.log("Full API response:", response);
+
+          const { minute, questions } = response.data;
+
+          // If response is empty, log for debugging
+          if (!questions || questions.length === 0) {
+            console.warn("No questions received from API");
+          }
+
+          setTimer(minute * 60);
+          setQuestions(questions.map((q) => q.question));
+          setAnsweredQuestions(new Array(questions.length).fill(false));
+          setSelectedAnswers(new Array(questions.length).fill(null));
         } catch (error) {
           console.error("Error fetching questions:", error);
         } finally {
@@ -43,11 +58,32 @@ export default function QuizPage() {
     fetchQuestions();
   }, [courseId]);
 
+  useEffect(() => {
+    let interval;
+    if (isQuizStarted && !showScore && timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prevTimer) => {
+          if (prevTimer <= 1) {
+            clearInterval(interval);
+            handleSubmit();
+            return 0;
+          }
+          return prevTimer - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isQuizStarted, showScore, timer]);
+
   const handleSubmit = () => {
     setShowScore(true);
   };
 
   const handleAnswerOptionClick = (answerOption, index) => {
+    if (!isQuizStarted) {
+      setIsQuizStarted(true);
+    }
+
     setSelectedAnswers((prev) => {
       const newSelectedAnswers = [...prev];
       newSelectedAnswers[currentQuestion] = index;
@@ -78,10 +114,15 @@ export default function QuizPage() {
     setScore(0);
     setAnsweredQuestions(new Array(questions.length).fill(false));
     setSelectedAnswers(new Array(questions.length).fill(null));
+    setTimer(0);
+    setIsQuizStarted(false);
   };
 
   const goToQuestion = (index) => {
     setCurrentQuestion(index);
+    if (!isQuizStarted) {
+      setIsQuizStarted(true);
+    }
   };
 
   const handleGoBack = () => {
@@ -90,6 +131,12 @@ export default function QuizPage() {
 
   const allQuestionsAnswered = answeredQuestions.every(Boolean);
   const completedQuestionsCount = answeredQuestions.filter(Boolean).length;
+
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
+  };
 
   if (isLoading) {
     return (
@@ -116,7 +163,10 @@ export default function QuizPage() {
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
       <div className="h-[calc(100vh-100px)] w-full md:w-1/4 p-4 bg-white shadow-md">
-        <h2 className="text-xl font-bold mb-4">All Questions</h2>
+        <div className="text-left text-lg font-semibold p-2">
+          Time: {formatTime(timer)}
+        </div>
+        <h2 className="text-xl p-2 font-bold">All Questions</h2>
         <div className="overflow-y-auto p-2 mb-4">
           <div className="space-y-2">
             {questions.map((question, index) => (
@@ -157,8 +207,11 @@ export default function QuizPage() {
               <h2 className="text-2xl font-bold mb-4 text-center">
                 Quiz Completed!
               </h2>
-              <p className="text-xl mb-6 text-center">
+              <p className="text-xl mb-2 text-center">
                 You scored {score} out of {questions.length}
+              </p>
+              <p className="text-lg mb-6 text-center">
+                Time Left: {formatTime(timer)}
               </p>
               <div className="space-y-6">
                 {questions.map((question, questionIndex) => (
