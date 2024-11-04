@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import FlashcardDeck from "../../../components/quiz/QuizCard";
-import { Users, Star, BookOpen, Play, RotateCcw, Settings } from "lucide-react";
+import FlashcardList from "../../../components/quiz/QuizList";
+import {
+  Users,
+  Star,
+  BookOpen,
+  Play,
+  RotateCcw,
+  Eye,
+  EyeClosed,
+} from "lucide-react";
 import axios from "axios";
 
 const QuizDetail = () => {
@@ -13,6 +22,7 @@ const QuizDetail = () => {
   const [flashcards, setFlashcards] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [courseName, setCourseName] = useState("");
+  const [hiddenChoices, setHiddenChoices] = useState([]);
 
   // Shuffle function using Fisher-Yates algorithm
   const shuffleArray = (array) => {
@@ -33,6 +43,10 @@ const QuizDetail = () => {
     navigate(`/quiz?courseId=${courseId}`);
   };
 
+  const toggleHideChoices = () => {
+    setHiddenChoices(!hiddenChoices); // Toggle the hideAll state
+  };
+
   useEffect(() => {
     const fetchQuestions = async (courseId) => {
       try {
@@ -43,13 +57,19 @@ const QuizDetail = () => {
           }
         );
 
+        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
         const formattedFlashcards = response.data.map((item) => {
           const correctAnswer = item.options.find(
             (option) => option.isCorrect
           )?.optionText;
 
+          const choices = item.options.map((option, index) => ({
+            label: alphabet[index], // Assign labels like "A", "B", "C", etc.
+            text: option.optionText, // Use the original option text
+          }));
           return {
             question: item.questionText,
+            options: choices,
             answer: correctAnswer || "No correct answer found", // Fallback if no correct answer exists
           };
         });
@@ -118,7 +138,10 @@ const QuizDetail = () => {
               { icon: BookOpen, text: "Thẻ ghi nhớ" },
               { icon: Play, text: "Take quiz" },
               { icon: RotateCcw, text: "Shuffle cards" },
-              { icon: Settings, text: "Ghép thẻ" },
+              {
+                icon: hiddenChoices ? Eye : EyeClosed,
+                text: hiddenChoices ? "Show All Options" : "Hide All Options",
+              },
             ].map((item, index) => (
               <button
                 key={index}
@@ -129,6 +152,9 @@ const QuizDetail = () => {
                   }
                   if (index === 2) {
                     handleShuffle();
+                  }
+                  if (index === 3) {
+                    toggleHideChoices();
                   }
                 }}
               >
@@ -148,9 +174,16 @@ const QuizDetail = () => {
             </div>
           ) : (
             <div className="flex justify-center items-center mt-4 bg-gray-100">
-              <FlashcardDeck cards={flashcards} />
+              <FlashcardDeck
+                cards={flashcards}
+                isOptionHidden={hiddenChoices}
+              />
             </div>
           )}
+
+          <div className="mt-8">
+            <FlashcardList cards={flashcards}></FlashcardList>
+          </div>
         </div>
       </div>
     </>

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Image, Form, Button } from "react-bootstrap";
 import Card from "../../../components/Card";
-import { useOutletContext } from "react-router-dom";
 
 // img
 import avatars1 from "../../../assets/images/avatars/01.png";
@@ -10,7 +9,6 @@ const UserProfile = () => {
   const [notification, setNotification] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const { fetchUserData } = useOutletContext();
   const userId = 1;
 
   const [formData, setFormData] = useState({
@@ -25,8 +23,36 @@ const UserProfile = () => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    fetchUserData();
+    const userData = getUserInfo();
+    if (userData) {
+      setFormData(userData);
+      setIsLoading(false);
+    }
   }, []);
+
+  const getUserInfo = () => {
+    // Retrieve the user data from localStorage
+    const userDataString = localStorage.getItem("user");
+
+    // If no user data is stored, return null or handle it appropriately
+    if (!userDataString) {
+      return null;
+    }
+
+    // Parse the JSON string to get the user data object
+    const userData = JSON.parse(userDataString);
+
+    // Clean up the user data by trimming whitespace and handling null values
+    return {
+      id: userData.id,
+      username: userData.username ? userData.username.trim() : "Unknown",
+      displayName: userData.displayName
+        ? userData.displayName.trim()
+        : "No display name",
+      email: userData.email ? userData.email : "No email provided",
+      role: userData.role,
+    };
+  };
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;

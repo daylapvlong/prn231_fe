@@ -71,7 +71,7 @@ const BrowseCourses = () => {
         // Set the cookie without HttpOnly, and optionally without Secure
         document.cookie = `cartList=${encodeURIComponent(
           JSON.stringify(cartList)
-        )}; path=/; max-age=${7 * 24 * 60 * 60};`;
+        )}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=None; Secure`;
         fetchCartData();
 
         alert("Course added to cart!");

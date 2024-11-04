@@ -1,4 +1,4 @@
-import React, { memo, Fragment, useEffect } from "react";
+import React, { memo, Fragment, useEffect, useState } from "react";
 import { useAuth } from "../../../../components/auth";
 import { ShoppingCart } from "lucide-react";
 import { Navbar, Dropdown, Container, Nav } from "react-bootstrap";
@@ -16,13 +16,48 @@ import avatars1 from "../../../../assets/images/avatars/01.png";
 import Logo from "../../components/logo";
 // mobile-offcanvas
 
-const HeaderStyle = memo(({ cartCount, fetchCartData, fetchUserData }) => {
+const HeaderStyle = memo(({ cartCount, fetchCartData }) => {
   const { isAuthenticated, logout } = useAuth();
+  const [userInfo, setUserInfo] = useState({ username: "", role: "" });
 
   useEffect(() => {
     fetchCartData();
-    fetchUserData();
-  }, [fetchCartData, fetchUserData]);
+    const userData = getUserInfo();
+    if (userData) {
+      setUserInfo(userData);
+    }
+  }, [fetchCartData]);
+
+  const getUserInfo = () => {
+    // Retrieve the user data from localStorage
+    const userDataString = localStorage.getItem("user");
+
+    // If no user data is stored, return null or handle it appropriately
+    if (!userDataString) {
+      return null;
+    }
+
+    // Parse the JSON string to get the user data object
+    const userData = JSON.parse(userDataString);
+
+    // Define a role mapping object to translate numeric roles to string roles
+    const roleMapping = {
+      0: "Admin",
+      1: "Teacher",
+      2: "Student",
+    };
+
+    // Clean up the user data by trimming whitespace and handling null values
+    return {
+      id: userData.id,
+      username: userData.username ? userData.username.trim() : "Unknown", // Trim whitespace, handle missing username
+      displayName: userData.displayName
+        ? userData.displayName.trim()
+        : "No display name", // Trim whitespace, handle missing display name
+      email: userData.email ? userData.email : "No email provided", // Handle null email
+      role: roleMapping[userData.role] || "Unknown role", // Map numeric role to a string, handle unknown roles
+    };
+  };
 
   return (
     <Fragment>
@@ -72,17 +107,15 @@ const HeaderStyle = memo(({ cartCount, fetchCartData, fetchUserData }) => {
                     />
                     <div className="caption ms-3 ">
                       <p className="mb-0 caption-title text-lg">
-                        Austin Robertson
+                        {userInfo.username}
                       </p>
                       <p className="mb-0 caption-sub-title text-xs">
-                        Marketing Administrator
+                        {userInfo.role}
                       </p>
                     </div>
                   </Dropdown.Toggle>
                   <Dropdown.Menu as="ul" className="dropdown-menu-end">
-                    <Dropdown.Item href="https://templates.iqonic.design/hope-ui/react/build/dashboard/app/user-profile">
-                      Profile
-                    </Dropdown.Item>
+                    <Dropdown.Item href="/user-profile">Profile</Dropdown.Item>
                     <Dropdown.Item href="https://templates.iqonic.design/hope-ui/react/build/dashboard/app/user-privacy-setting">
                       Privacy Setting
                     </Dropdown.Item>

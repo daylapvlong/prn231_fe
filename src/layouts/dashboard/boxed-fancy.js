@@ -75,13 +75,9 @@ const Container = memo((props) => {
   return (
     <Fragment>
       <main className="main-content">
-        <HeaderStyle
-          cartCount={cartCount}
-          fetchCartData={fetchCartData}
-          fetchUserData={fetchUserData}
-        />
+        <HeaderStyle cartCount={cartCount} fetchCartData={fetchCartData} />
         <div className="conatiner-fluid content-inner">
-          <Router fetchCartData={fetchCartData} fetchUserData={fetchUserData} />
+          <Router fetchCartData={fetchCartData} />
         </div>
         <Footer />
       </main>

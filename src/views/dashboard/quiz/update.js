@@ -35,7 +35,7 @@ export default function UpdateQuestions() {
             q.options.filter((o) => o.isCorrect).length > 1
               ? "multiple"
               : "one",
-          options: q.options.map((o) => ({ ...o, isTrue: o.isCorrect })),
+          options: q.options.map((o) => ({ ...o, isCorrect: o.isCorrect })),
         }));
 
         setQuestions(transformedData);
@@ -61,12 +61,12 @@ export default function UpdateQuestions() {
         if (q.id === id) {
           const updatedOptions = q.options.map((o) => ({
             ...o,
-            isTrue: type === "one" ? false : o.isTrue,
+            isCorrect: type === "one" ? false : o.isCorrect,
           }));
           if (type === "one") {
-            const trueIndex = updatedOptions.findIndex((o) => o.isTrue);
+            const trueIndex = updatedOptions.findIndex((o) => o.isCorrect);
             if (trueIndex !== -1) {
-              updatedOptions[trueIndex].isTrue = true;
+              updatedOptions[trueIndex].isCorrect = true;
             }
           }
           return { ...q, type, options: updatedOptions };
@@ -101,14 +101,14 @@ export default function UpdateQuestions() {
               ...q,
               options: q.options.map((o) => ({
                 ...o,
-                isTrue: o.id === optionId,
+                isCorrect: o.id === optionId,
               })),
             };
           } else {
             return {
               ...q,
               options: q.options.map((o) =>
-                o.id === optionId ? { ...o, isTrue: !o.isTrue } : o
+                o.id === optionId ? { ...o, isCorrect: !o.isCorrect } : o
               ),
             };
           }
@@ -126,7 +126,7 @@ export default function UpdateQuestions() {
             ...q,
             options: [
               ...q.options,
-              { id: Date.now(), optionText: "", isTrue: false },
+              { id: 0, optionText: "", isCorrect: false },
             ],
           };
         }
@@ -157,7 +157,7 @@ export default function UpdateQuestions() {
         options: q.options.map((o) => ({
           id: o.id,
           optionText: o.optionText,
-          isTrue: o.isTrue,
+          isCorrect: o.isCorrect,
         })),
       }));
 
@@ -255,12 +255,12 @@ export default function UpdateQuestions() {
                   type="button"
                   onClick={() => toggleCorrectAnswer(question.id, option.id)}
                   className={`mr-2 px-3 py-1 text-sm font-medium rounded-md ${
-                    option.isTrue
+                    option.isCorrect
                       ? "bg-green-500 text-white"
                       : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                   }`}
                 >
-                  {option.isTrue ? "Correct" : "Incorrect"}
+                  {option.isCorrect ? "Correct" : "Incorrect"}
                 </button>
                 <input
                   type="text"

@@ -34,6 +34,7 @@ const SignUp = () => {
         email,
         displayName,
         password,
+        role: 2,
       });
 
       setSuccessMessage("Sign Up successful!"); // Display success message
@@ -134,7 +135,7 @@ const SignUp = () => {
                               type="text"
                               id="username"
                               placeholder="Enter your username"
-                              value={username}
+                              value={username.trim()}
                               onChange={(e) => setUsername(e.target.value)}
                               required
                             />
@@ -147,7 +148,7 @@ const SignUp = () => {
                               type="email"
                               id="email"
                               placeholder="Enter your email"
-                              value={email}
+                              value={email.trim()}
                               onChange={(e) => setEmail(e.target.value)}
                               required
                             />
@@ -162,7 +163,7 @@ const SignUp = () => {
                               type="text"
                               id="displayName"
                               placeholder="Enter your display name"
-                              value={displayName}
+                              value={displayName.trim()}
                               onChange={(e) => setDisplayName(e.target.value)}
                               required
                             />

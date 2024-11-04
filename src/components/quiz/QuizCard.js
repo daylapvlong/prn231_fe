@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./Flashcard.css"; // Import minimal custom CSS for 3D flip
 
-const Flashcard = ({ question, answer }) => {
+const Flashcard = ({ question, options, answer, isOptionHidden }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   const handleClick = () => {
@@ -10,7 +10,7 @@ const Flashcard = ({ question, answer }) => {
 
   return (
     <div
-      className="w-96 h-72 perspective-1000 cursor-pointer"
+      className="w-[50rem] h-[30rem] perspective-1000 cursor-pointer"
       onClick={handleClick}
     >
       <div
@@ -19,7 +19,19 @@ const Flashcard = ({ question, answer }) => {
         }`}
       >
         <div className="absolute w-full h-full backface-hidden bg-white flex items-center justify-center p-10 rounded-lg shadow-2xl">
-          <p className="text-3xl text-center">{question}</p>
+          <div>
+            <p className="text-3xl text-center mb-4">{question}</p>
+            <ul
+              className="text-2xl text-left"
+              style={{ display: isOptionHidden ? "none" : "block" }}
+            >
+              {options.map((choice, choiceIndex) => (
+                <li key={choiceIndex}>
+                  <strong>{choice.label}</strong>: {choice.text}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
         <div className="absolute w-full h-full backface-hidden bg-white flex items-center justify-center p-10 rounded-lg shadow-md rotate-y-180">
           <p className="text-3xl text-center">{answer}</p>
@@ -29,7 +41,7 @@ const Flashcard = ({ question, answer }) => {
   );
 };
 
-const FlashcardDeck = ({ cards }) => {
+const FlashcardDeck = ({ cards, isOptionHidden }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handlePrevious = () => {
@@ -42,7 +54,7 @@ const FlashcardDeck = ({ cards }) => {
 
   return (
     <div className="flex flex-col items-center space-y-6">
-      <Flashcard {...cards[currentIndex]} />
+      <Flashcard {...cards[currentIndex]} isOptionHidden={isOptionHidden} />
       <div className="flex items-center space-x-4">
         <button
           onClick={handlePrevious}

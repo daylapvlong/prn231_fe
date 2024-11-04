@@ -1,10 +1,10 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 
-const Router = ({ fetchCartData, fetchUserData }) => {
+const Router = ({ fetchCartData }) => {
   return (
     <div>
-      <Outlet context={{ fetchCartData, fetchUserData }} />
+      <Outlet context={{ fetchCartData }} />
     </div>
   );
 };
