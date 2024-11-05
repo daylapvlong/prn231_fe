@@ -5,12 +5,12 @@ import FlashcardList from "../../../components/quiz/QuizList";
 import {
   Users,
   Star,
-  BookOpen,
   Play,
   RotateCcw,
   Eye,
   EyeClosed,
   X,
+  Pen,
 } from "lucide-react";
 import axios from "axios";
 
@@ -163,7 +163,7 @@ const QuizDetail = () => {
                 icon: hiddenChoices ? Eye : EyeClosed,
                 text: hiddenChoices ? "Show All Options" : "Hide All Options",
               },
-              { icon: BookOpen, text: "Update" },
+              { icon: Pen, text: "Update" },
             ].map((item, index) => (
               <button
                 key={index}

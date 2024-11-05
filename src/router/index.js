@@ -3,6 +3,7 @@ import BoxedFancy from "../layouts/dashboard/boxed-fancy";
 import SignIn from "../views/dashboard/auth/sign-in";
 import SignUp from "../views/dashboard/auth/sign-up";
 import Recoverpw from "../views/dashboard/auth/recoverpw";
+import Resetpw from "../views/dashboard/auth/resetpw";
 import BootstrapTable from "../views/dashboard/table/bootstrap-table";
 import UserProfile from "../views/dashboard/app/user-profile";
 import UserList from "../views/dashboard/app/user-list";
@@ -72,5 +73,9 @@ export const IndexRouters = [
   {
     path: "auth/recoverpw",
     element: <Recoverpw />,
+  },
+  {
+    path: "auth/resetpw",
+    element: <Resetpw />,
   },
 ];

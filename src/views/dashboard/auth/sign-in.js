@@ -42,6 +42,35 @@ const SignIn = () => {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    try {
+      // Assuming you get these values from Google Sign-In SDK
+      const googleIdToken = "your-google-id-token";
+      const email = "user-email@example.com";
+      const displayName = "User Display Name";
+
+      // Prepare the request body
+      const body = {
+        googleIdToken,
+        email,
+        displayName,
+      };
+
+      // Make the API request
+      const response = await axios.post(
+        "http://localhost:5038/api/LoginGoogle/GoogleSignIn",
+        body
+      );
+
+      // Handle the response
+      console.log("Login successful:", response.data);
+      // You can redirect or store user data, etc.
+    } catch (error) {
+      console.error("Error during Google Sign-In:", error);
+      // Handle error (show a message, etc.)
+    }
+  };
+
   return (
     <>
       <section className="login-content">
@@ -156,10 +185,17 @@ const SignIn = () => {
                           <Link to="/auth/recoverpw">Forgot Password?</Link>
                         </Col>
                       </Row>
-                      <div className="d-flex justify-content-center">
+                      <div className="d-flex justify-content-center space-x-2">
                         <Button type="submit" variant="btn btn-primary">
                           Sign In
                         </Button>{" "}
+                        <Button
+                          type="button"
+                          variant="btn btn-primary"
+                          onClick={handleGoogleSignIn}
+                        >
+                          Sign In with Google
+                        </Button>
                         {/* Button type changed to submit */}
                       </div>
                       <p className="mt-3 text-center">
