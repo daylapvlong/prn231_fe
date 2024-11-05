@@ -28,7 +28,6 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(true);
         setUserRole(user.role);
         setUserData(user);
-        console.log(`role: ${user.role}`);
       } else {
         localStorage.removeItem("token");
         localStorage.removeItem("tokenExpiration");

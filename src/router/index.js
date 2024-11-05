@@ -16,6 +16,9 @@ import CreateCourses from "../views/dashboard/quiz/create";
 import UpdateQuestion from "../views/dashboard/quiz/update";
 import AuthorizedRoute from "../components/auth/authRoute";
 
+// Make sure userRole is defined or fetched (from context, localStorage, etc.)
+const userRole = localStorage.getItem("user") || "";
+
 export const IndexRouters = [
   {
     path: "/",
@@ -23,7 +26,13 @@ export const IndexRouters = [
     children: [
       {
         path: "/dashboard",
-        element: <AuthorizedRoute element={<Admin />} allowedRoles={["0"]} />,
+        element: (
+          <AuthorizedRoute
+            element={<Admin />}
+            allowedRoles={["0"]}
+            userRole={userRole}
+          />
+        ),
       },
       {
         path: "/billing",
@@ -31,6 +40,7 @@ export const IndexRouters = [
           <AuthorizedRoute
             element={<Billing />}
             allowedRoles={["0", "1", "2"]}
+            userRole={userRole}
           />
         ),
       },
@@ -40,6 +50,7 @@ export const IndexRouters = [
           <AuthorizedRoute
             element={<UserProfile />}
             allowedRoles={["0", "1", "2"]}
+            userRole={userRole}
           />
         ),
       },
@@ -49,18 +60,21 @@ export const IndexRouters = [
           <AuthorizedRoute
             element={<UserList />}
             allowedRoles={["0", "1", "2"]}
+            userRole={userRole}
           />
         ),
       },
       {
         path: "/home",
-        element: <QuizBrowse allowedRoles={[]} />,
+        element: <QuizBrowse />,
       },
       {
         path: "/quiz-list",
         element: (
           <AuthorizedRoute
-            element={<BootstrapTable allowedRoles={["0", "1", "2"]} />}
+            element={<BootstrapTable />}
+            allowedRoles={["0", "1", "2"]}
+            userRole={userRole}
           />
         ),
       },
@@ -68,7 +82,9 @@ export const IndexRouters = [
         path: "/quiz",
         element: (
           <AuthorizedRoute
-            element={<QuizTaker allowedRoles={["0", "1", "2"]} />}
+            element={<QuizTaker />}
+            allowedRoles={["0", "1", "2"]}
+            userRole={userRole}
           />
         ),
       },
@@ -76,20 +92,30 @@ export const IndexRouters = [
         path: "/quiz-detail",
         element: (
           <AuthorizedRoute
-            element={<QuizDetail allowedRoles={["0", "1", "2"]} />}
+            element={<QuizDetail />}
+            allowedRoles={["0", "1", "2"]}
+            userRole={userRole}
           />
         ),
       },
       {
         path: "/create",
         element: (
-          <AuthorizedRoute element={<CreateCourses />} allowedRoles={["1"]} />
+          <AuthorizedRoute
+            element={<CreateCourses />}
+            allowedRoles={["1"]}
+            userRole={userRole}
+          />
         ),
       },
       {
         path: "/update",
         element: (
-          <AuthorizedRoute element={<UpdateQuestion />} allowedRoles={["1"]} />
+          <AuthorizedRoute
+            element={<UpdateQuestion />}
+            allowedRoles={["1"]}
+            userRole={userRole}
+          />
         ),
       },
     ],
@@ -103,11 +129,11 @@ export const IndexRouters = [
     element: <SignUp />,
   },
   {
-    path: "auth/recoverpw",
+    path: "/auth/recoverpw",
     element: <Recoverpw />,
   },
   {
-    path: "auth/resetpw",
+    path: "/auth/resetpw",
     element: <Resetpw />,
   },
 ];
