@@ -16,6 +16,10 @@ import SettingOffCanvas from "../../components/setting/SettingOffCanvas";
 
 const Container = memo((props) => {
   const [cartCount, setCartCount] = useState(0);
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem("user");
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
 
   const fetchCartData = async () => {
     try {
@@ -59,6 +63,7 @@ const Container = memo((props) => {
       if (response.ok) {
         const userData = await response.json();
         localStorage.setItem("user", JSON.stringify(userData));
+        setUser(userData);
       } else {
         throw new Error("Failed to fetch user data");
       }
@@ -69,8 +74,13 @@ const Container = memo((props) => {
 
   useEffect(() => {
     fetchCartData();
-    fetchUserData();
   }, []);
+
+  useEffect(() => {
+    if (!user) {
+      fetchUserData();
+    }
+  }, [user]);
 
   return (
     <Fragment>
