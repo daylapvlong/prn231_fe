@@ -33,12 +33,10 @@ export default function QuizPage() {
             },
           });
 
-          // Log the full response to see what is being returned
           console.log("Full API response:", response);
 
           const { minute, questions } = response.data;
 
-          // If response is empty, log for debugging
           if (!questions || questions.length === 0) {
             console.warn("No questions received from API");
           }
@@ -46,7 +44,7 @@ export default function QuizPage() {
           setTimer(minute * 60);
           setQuestions(questions.map((q) => q.question));
           setAnsweredQuestions(new Array(questions.length).fill(false));
-          setSelectedAnswers(new Array(questions.length).fill(null));
+          setSelectedAnswers(new Array(questions.length).fill([])); // Allow multiple answers per question
         } catch (error) {
           console.error("Error fetching questions:", error);
         } finally {
@@ -86,26 +84,27 @@ export default function QuizPage() {
 
     setSelectedAnswers((prev) => {
       const newSelectedAnswers = [...prev];
-      newSelectedAnswers[currentQuestion] = index;
+      const selectedForCurrent = [...newSelectedAnswers[currentQuestion]];
+
+      // Toggle the answer (select or deselect)
+      if (selectedForCurrent.includes(index)) {
+        selectedForCurrent.splice(selectedForCurrent.indexOf(index), 1);
+      } else {
+        selectedForCurrent.push(index);
+      }
+
+      newSelectedAnswers[currentQuestion] = selectedForCurrent;
+
+      // Update the selected answers
+      setAnsweredQuestions((prevAnswered) => {
+        const newAnswered = [...prevAnswered];
+        // If no answers are selected for the current question, mark it as unanswered
+        newAnswered[currentQuestion] = selectedForCurrent.length > 0;
+        return newAnswered;
+      });
+
       return newSelectedAnswers;
     });
-
-    setAnsweredQuestions((prev) => {
-      const newAnswered = [...prev];
-      newAnswered[currentQuestion] = true;
-      return newAnswered;
-    });
-
-    if (answerOption.isCorrect) {
-      setScore((prevScore) => prevScore + 1);
-    }
-
-    setTimeout(() => {
-      const nextQuestion = currentQuestion + 1;
-      if (nextQuestion < questions.length) {
-        setCurrentQuestion(nextQuestion);
-      }
-    }, 500);
   };
 
   const restartQuiz = () => {
@@ -113,7 +112,7 @@ export default function QuizPage() {
     setShowScore(false);
     setScore(0);
     setAnsweredQuestions(new Array(questions.length).fill(false));
-    setSelectedAnswers(new Array(questions.length).fill(null));
+    setSelectedAnswers(new Array(questions.length).fill([]));
     setTimer(0);
     setIsQuizStarted(false);
   };
@@ -136,6 +135,33 @@ export default function QuizPage() {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
+  };
+
+  const calculateScore = () => {
+    let tempScore = 0;
+    questions.forEach((question, questionIndex) => {
+      const correctAnswers = question.options
+        .map((option, index) => (option.isCorrect ? index : null))
+        .filter((index) => index !== null);
+      const selectedForQuestion = selectedAnswers[questionIndex];
+      if (
+        correctAnswers.length === selectedForQuestion.length &&
+        correctAnswers.every((answer) => selectedForQuestion.includes(answer))
+      ) {
+        tempScore += 1; // Score for fully correct multi-answer questions
+      }
+    });
+    setScore(tempScore);
+  };
+
+  useEffect(() => {
+    if (showScore) {
+      calculateScore();
+    }
+  }, [showScore]);
+
+  const getCorrectAnswerCount = (question) => {
+    return question.options.filter((option) => option.isCorrect).length;
   };
 
   if (isLoading) {
@@ -222,10 +248,17 @@ export default function QuizPage() {
                     <h3 className="text-lg font-medium mb-2">
                       Question {questionIndex + 1}: {question.questionText}
                     </h3>
+
+                    {getCorrectAnswerCount(question) > 1 && (
+                      <p className="text-sm text-gray-600 mb-2">
+                        ({getCorrectAnswerCount(question)} correct answers)
+                      </p>
+                    )}
+
                     <div className="space-y-2">
                       {question.options.map((option, optionIndex) => {
                         const isSelected =
-                          selectedAnswers[questionIndex] === optionIndex;
+                          selectedAnswers[questionIndex]?.includes(optionIndex);
                         const isCorrect = option.isCorrect;
                         const isWrongAnswer = isSelected && !isCorrect;
 
@@ -298,6 +331,14 @@ export default function QuizPage() {
               <h3 className="text-lg font-medium mb-4">
                 {questions[currentQuestion]?.questionText}
               </h3>
+
+              {getCorrectAnswerCount(questions[currentQuestion]) > 1 && (
+                <p className="text-sm text-gray-600 mb-2">
+                  ({getCorrectAnswerCount(questions[currentQuestion])} correct
+                  answers)
+                </p>
+              )}
+
               <div className="space-y-2">
                 {questions[currentQuestion]?.options.map(
                   (answerOption, index) => (
@@ -307,7 +348,7 @@ export default function QuizPage() {
                         handleAnswerOptionClick(answerOption, index)
                       }
                       className={`w-full p-3 text-left rounded-lg transition duration-300 ${
-                        selectedAnswers[currentQuestion] === index
+                        selectedAnswers[currentQuestion]?.includes(index)
                           ? "bg-blue-500 text-white"
                           : "bg-gray-100 hover:bg-gray-200"
                       }`}
