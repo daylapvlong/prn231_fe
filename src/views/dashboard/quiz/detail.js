@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import FlashcardDeck from "../../../components/quiz/QuizCard";
 import FlashcardList from "../../../components/quiz/QuizList";
+import { useAuth } from "../../../components/auth/index";
 import {
   Users,
   Star,
@@ -28,6 +29,7 @@ const QuizDetail = () => {
   const [quizTime, setQuizTime] = useState(30);
   const [questionCount, setQuestionCount] = useState(10);
   const [error, setError] = useState("");
+  const { userRole } = useAuth();
 
   // Shuffle function using Fisher-Yates algorithm
   const shuffleArray = (array) => {
@@ -163,7 +165,7 @@ const QuizDetail = () => {
                 icon: hiddenChoices ? Eye : EyeClosed,
                 text: hiddenChoices ? "Show All Options" : "Hide All Options",
               },
-              { icon: Pen, text: "Update" },
+              ...(userRole === "1" ? [{ icon: Pen, text: "Update" }] : []),
             ].map((item, index) => (
               <button
                 key={index}

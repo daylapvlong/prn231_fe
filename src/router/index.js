@@ -14,6 +14,7 @@ import QuizTaker from "../views/dashboard/quiz";
 import QuizDetail from "../views/dashboard/quiz/detail";
 import CreateCourses from "../views/dashboard/quiz/create";
 import UpdateQuestion from "../views/dashboard/quiz/update";
+import AuthorizedRoute from "../components/auth/authRoute";
 
 export const IndexRouters = [
   {
@@ -22,43 +23,74 @@ export const IndexRouters = [
     children: [
       {
         path: "/dashboard",
-        element: <Admin />,
+        element: <AuthorizedRoute element={<Admin />} allowedRoles={["0"]} />,
       },
       {
         path: "/billing",
-        element: <Billing />,
+        element: (
+          <AuthorizedRoute
+            element={<Billing />}
+            allowedRoles={["0", "1", "2"]}
+          />
+        ),
       },
       {
         path: "/user-profile",
-        element: <UserProfile />,
+        element: (
+          <AuthorizedRoute
+            element={<UserProfile />}
+            allowedRoles={["0", "1", "2"]}
+          />
+        ),
       },
       {
         path: "/user-list",
-        element: <UserList />,
+        element: (
+          <AuthorizedRoute
+            element={<UserList />}
+            allowedRoles={["0", "1", "2"]}
+          />
+        ),
       },
       {
         path: "/home",
-        element: <QuizBrowse />,
+        element: <QuizBrowse allowedRoles={[]} />,
       },
       {
         path: "/quiz-list",
-        element: <BootstrapTable />,
+        element: (
+          <AuthorizedRoute
+            element={<BootstrapTable allowedRoles={["0", "1", "2"]} />}
+          />
+        ),
       },
       {
         path: "/quiz",
-        element: <QuizTaker />,
+        element: (
+          <AuthorizedRoute
+            element={<QuizTaker allowedRoles={["0", "1", "2"]} />}
+          />
+        ),
       },
       {
         path: "/quiz-detail",
-        element: <QuizDetail />,
+        element: (
+          <AuthorizedRoute
+            element={<QuizDetail allowedRoles={["0", "1", "2"]} />}
+          />
+        ),
       },
       {
         path: "/create",
-        element: <CreateCourses />,
+        element: (
+          <AuthorizedRoute element={<CreateCourses />} allowedRoles={["1"]} />
+        ),
       },
       {
         path: "/update",
-        element: <UpdateQuestion />,
+        element: (
+          <AuthorizedRoute element={<UpdateQuestion />} allowedRoles={["1"]} />
+        ),
       },
     ],
   },
