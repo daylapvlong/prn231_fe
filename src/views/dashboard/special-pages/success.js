@@ -49,6 +49,8 @@ export default function PaymentSuccess() {
         if (!response.ok) {
           throw new Error("Failed to confirm payment");
         }
+
+        removeCartList();
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "An unknown error occurred"
@@ -74,6 +76,11 @@ export default function PaymentSuccess() {
       .split("; ")
       .find((row) => row.startsWith("cartList="));
     return cartListCookie ? cartListCookie.split("=")[1] : null;
+  };
+
+  const removeCartList = () => {
+    document.cookie =
+      "cartList=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
   };
 
   if (loading) {
