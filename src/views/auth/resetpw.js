@@ -141,7 +141,7 @@ const Resetpw = () => {
                       fill="currentColor"
                     />
                   </svg>
-                  <h4 className="logo-title ms-3">Hope UI</h4>
+                  <h4 className="logo-title ms-3">QuizMaster</h4>
                 </Link>
 
                 <div>

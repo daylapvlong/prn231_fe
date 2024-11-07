@@ -18,52 +18,40 @@ export const AuthProvider = ({ children }) => {
   const location = useLocation();
 
   useEffect(() => {
-    const checkAuthStatus = () => {
-      const token = localStorage.getItem("token");
-      const tokenExpiration = localStorage.getItem("tokenExpiration");
-      const user = JSON.parse(localStorage.getItem("user"));
+    const token = localStorage.getItem("token");
+    const tokenExpiration = localStorage.getItem("tokenExpiration");
+    const user = JSON.parse(localStorage.getItem("user"));
 
-      if (user && user.role) {
+    if (user && user.role) {
+      setUserRole(user.role);
+    } else {
+      setUserRole(null);
+    }
+
+    if (token && tokenExpiration) {
+      const isTokenExpired =
+        new Date().getTime() > new Date(tokenExpiration).getTime();
+
+      if (!isTokenExpired && user) {
+        setIsAuthenticated(true);
         setUserRole(user.role);
+        setUserData(user);
+        console.log(user.role);
       } else {
-        setUserRole(null);
-      }
-
-      if (token && tokenExpiration) {
-        const isTokenExpired =
-          new Date().getTime() > new Date(tokenExpiration).getTime();
-
-        if (!isTokenExpired && user) {
-          setIsAuthenticated(true);
-          setUserRole(user.role.toString());
-          setUserData(user);
-        } else {
-          localStorage.removeItem("token");
-          localStorage.removeItem("tokenExpiration");
-          localStorage.removeItem("user");
-          setIsAuthenticated(false);
-          setUserRole(null);
-          setUserData(null);
-        }
-      } else {
+        localStorage.removeItem("token");
+        localStorage.removeItem("tokenExpiration");
+        localStorage.removeItem("user");
         setIsAuthenticated(false);
         setUserRole(null);
         setUserData(null);
       }
+    } else {
+      setIsAuthenticated(false);
+      setUserRole(null);
+      setUserData(null);
+    }
 
-      setLoading(false);
-    };
-
-    // Run the check when the component mounts
-    checkAuthStatus();
-
-    // Listen for changes in localStorage across windows/tabs
-    window.addEventListener("storage", checkAuthStatus);
-
-    // Clean up the event listener on component unmount
-    return () => {
-      window.removeEventListener("storage", checkAuthStatus);
-    };
+    setLoading(false);
   }, [location.pathname]);
 
   const logout = () => {

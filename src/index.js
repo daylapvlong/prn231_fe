@@ -5,6 +5,7 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 
 // Layout and components
+import LandingPage from "./views/landing/index";
 import Admin from "./views/admin/admin";
 import Billing from "./views/special-pages/billing";
 import PaymentSuccess from "./views/special-pages/success";
@@ -36,8 +37,9 @@ root.render(
       <BrowserRouter>
         <Routes>
           {/* Layout for the dashboard */}
-          <Route path="/" element={<App />}>
-            {/* Dashboard Routes */}
+          <Route path="/" element={<LandingPage />} />
+
+          <Route element={<App />}>
             <Route
               path="dashboard"
               element={

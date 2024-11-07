@@ -8,8 +8,9 @@ import auth1 from "../../assets/images/auth/01.png";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 function GoogleLoginButton() {
-  const { HandleIsAuthenticated } = useAuth();
+  // const { HandleIsAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const [error, setError] = useState("");
 
   // Callback function that gets triggered when Google Login is successful
   const handleCallbackResponse = (response) => {
@@ -20,7 +21,7 @@ function GoogleLoginButton() {
       .post("http://localhost:5038/api/LoginGoogle/GoogleSignIn", {
         googleIdToken, // Send the token to your backend
       })
-      .then((response) => {
+      .then(async (response) => {
         const { token, user } = response.data;
         const userData = {
           displayName: user.displayName,
@@ -34,12 +35,38 @@ function GoogleLoginButton() {
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(userData));
 
-        HandleIsAuthenticated();
+        // HandleIsAuthenticated();
+        await fetchUserData(response.data.token, setError);
         navigate("/home"); // Redirect using useNavigate
       })
       .catch((error) => {
         console.error("Error during login:", error);
       });
+  };
+
+  const fetchUserData = async (token, setError) => {
+    try {
+      // Make a GET request to fetch user data using the stored token
+      const response = await fetch("http://localhost:5038/api/Login/user", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const userData = await response.json();
+
+        // Save user data in localStorage and update state
+        localStorage.setItem("user", JSON.stringify(userData));
+      } else {
+        throw new Error("Failed to fetch user data");
+      }
+    } catch (error) {
+      setError("Error fetching user data");
+      console.error("Error fetching user data:", error);
+    }
   };
 
   useEffect(() => {
@@ -86,12 +113,13 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate(); // Use useNavigate instead of history
-  const { HandleIsAuthenticated } = useAuth();
+  // const { HandleIsAuthenticated } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
+      // Send POST request to authenticate the user
       const response = await axios.post("http://localhost:5038/api/Login", {
         username,
         password,
@@ -102,14 +130,42 @@ const SignIn = () => {
 
       // Set token expiration (3 hours from now)
       const expirationTime = new Date();
-      expirationTime.setHours(expirationTime.getHours() + 3); // Correcting the expiration time
+      expirationTime.setHours(expirationTime.getHours() + 3);
       localStorage.setItem("tokenExpiration", expirationTime);
+
+      // Fetch user data after successful login
+      await fetchUserData(response.data.token, setError);
 
       // Redirect to home or dashboard after successful login
       navigate("/home"); // Redirect using useNavigate
     } catch (err) {
       setError("Invalid credentials");
-      console.error("Login error:", err); // Log error without showing credentials
+      console.error("Login error:", err);
+    }
+  };
+
+  const fetchUserData = async (token, setError) => {
+    try {
+      // Make a GET request to fetch user data using the stored token
+      const response = await fetch("http://localhost:5038/api/Login/user", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const userData = await response.json();
+
+        // Save user data in localStorage and update state
+        localStorage.setItem("user", JSON.stringify(userData));
+      } else {
+        throw new Error("Failed to fetch user data");
+      }
+    } catch (error) {
+      setError("Error fetching user data");
+      console.error("Error fetching user data:", error);
     }
   };
 
@@ -171,7 +227,7 @@ const SignIn = () => {
                             fill="currentColor"
                           />
                         </svg>
-                        <h4 className="logo-title ms-3">Hope UI</h4>
+                        <h4 className="logo-title ms-3">QuizMaster</h4>
                       </Link>
                       <h2 className="mb-2 text-center">Sign In</h2>
                       <p className="text-center">Login to stay connected.</p>

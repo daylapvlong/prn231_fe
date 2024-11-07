@@ -112,10 +112,12 @@ const SignUp = () => {
                           fill="currentColor"
                         />
                       </svg>
-                      <h4 className="logo-title ms-3">Hope UI</h4>
+                      <h4 className="logo-title ms-3">QuizMaster</h4>
                     </Link>
                     <h2 className="mb-2 text-center">Sign Up</h2>
-                    <p className="text-center">Create your Hope UI account.</p>
+                    <p className="text-center">
+                      Create your QuizMaster account.
+                    </p>
 
                     {/* Display error or success messages */}
                     {error && (
