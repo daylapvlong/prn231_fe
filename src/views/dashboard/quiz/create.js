@@ -182,7 +182,24 @@ export default function CreateCourses() {
   const [notification, setNotification] = useState(null);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [userId, setUserId] = useState(null);
   const navigate = useNavigate();
+
+  const getUserId = () => {
+    // Retrieve the user data from localStorage
+    const userDataString = localStorage.getItem("user");
+
+    // If no user data is stored, return null or handle it appropriately
+    if (!userDataString) {
+      return null;
+    }
+
+    // Parse the JSON string to get the user data object
+    const userData = JSON.parse(userDataString);
+
+    // Clean up the user data by trimming whitespace and handling null values
+    return userData.id;
+  };
 
   useEffect(() => {
     // Fetch categories when the component is mounted
@@ -202,6 +219,11 @@ export default function CreateCourses() {
     };
 
     fetchCategories();
+
+    const userId = getUserId();
+    if (userId) {
+      setUserId(userId);
+    }
   }, []);
 
   const handleDragOver = (e) => {
@@ -296,7 +318,7 @@ export default function CreateCourses() {
       courseName: courseName,
       publish: true,
       totalJoined: 0,
-      createdBy: 0,
+      createdBy: userId,
       createdAt: new Date().toISOString(),
       image: courseImage
         ? getBase64WithoutPrefix(await getBase64(courseImage))

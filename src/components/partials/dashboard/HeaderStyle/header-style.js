@@ -66,7 +66,7 @@ const HeaderStyle = memo(({ cartCount, fetchCartData }) => {
           <Navbar.Brand as="div" className="col-lg-3">
             <Link to="/home" className="d-flex">
               <Logo color={true} />
-              <h4 className="logo-title">Hope UI</h4>
+              <h4 className="logo-title">QuizMaster</h4>
             </Link>
           </Navbar.Brand>
 

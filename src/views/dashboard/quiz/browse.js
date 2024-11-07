@@ -9,17 +9,20 @@ const BrowseCourses = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
   const navigate = useNavigate();
   const { fetchCartData } = useOutletContext();
 
   // Effect to fetch all courses when the component mounts
   useEffect(() => {
+    const userId = getUserId();
+
     const fetchAllCourses = async () => {
       setLoading(true);
       setError(null);
       try {
         const response = await axios.get(
-          "http://localhost:5038/api/Course/GetAllCourseBrowse"
+          `http://localhost:5038/api/Course/GetAllCourseBrowse?userId=${userId}`
         );
         setCourses(response.data); // Assuming the response is a JSON array
       } catch (err) {
@@ -31,6 +34,22 @@ const BrowseCourses = () => {
 
     fetchAllCourses();
   }, []);
+
+  const getUserId = () => {
+    // Retrieve the user data from localStorage
+    const userDataString = localStorage.getItem("user");
+
+    // If no user data is stored, return null or handle it appropriately
+    if (!userDataString) {
+      return null;
+    }
+
+    // Parse the JSON string to get the user data object
+    const userData = JSON.parse(userDataString);
+
+    // Clean up the user data by trimming whitespace and handling null values
+    return userData.id;
+  };
 
   const categories = useMemo(() => {
     const allCategories = courses

@@ -1,13 +1,13 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import { useAuth } from "./index"; // Adjust the import path as necessary
+import { useAuth } from "./index";
 
 const AuthorizedRoute = ({ element, allowedRoles }) => {
-  const { userRole, isAuthenticated } = useAuth();
+  const { userRole } = useAuth();
 
   if (!userRole) {
     console.error("userRole is not defined.");
-    return <Navigate to="/home" />;
+    return <Navigate to="/" />;
   }
 
   if (!allowedRoles.includes(userRole)) {

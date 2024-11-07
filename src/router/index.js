@@ -1,12 +1,13 @@
 import React from "react";
 import BoxedFancy from "../layouts/dashboard/boxed-fancy";
+import LandingPage from "../views/dashboard/landing/index";
 import SignIn from "../views/dashboard/auth/sign-in";
 import SignUp from "../views/dashboard/auth/sign-up";
 import Recoverpw from "../views/dashboard/auth/recoverpw";
 import Resetpw from "../views/dashboard/auth/resetpw";
-import BootstrapTable from "../views/dashboard/table/bootstrap-table";
-import UserProfile from "../views/dashboard/app/user-profile";
-import UserList from "../views/dashboard/app/user-list";
+import QuizManagement from "../views/dashboard/table/bootstrap-table";
+import UserProfile from "../views/dashboard/user/user-profile";
+import UserList from "../views/dashboard/user/user-list";
 import Billing from "../views/dashboard/special-pages/billing";
 import PaymentSuccess from "../views/dashboard/special-pages/success";
 import Admin from "../views/dashboard/admin/admin";
@@ -17,14 +18,18 @@ import CreateCourses from "../views/dashboard/quiz/create";
 import UpdateQuestion from "../views/dashboard/quiz/update";
 import AuthorizedRoute from "../components/auth/authRoute";
 
-// Make sure userRole is defined or fetched (from context, localStorage, etc.)
-const userRole = localStorage.getItem("user") || "";
+// Ideally, userRole would come from some context or a custom hook
+const userRole = JSON.parse(localStorage.getItem("user"))?.role || "";
 
 export const IndexRouters = [
   {
     path: "/",
     element: <BoxedFancy />,
     children: [
+      {
+        path: "/",
+        element: <LandingPage />,
+      },
       {
         path: "/dashboard",
         element: (
@@ -71,13 +76,19 @@ export const IndexRouters = [
       },
       {
         path: "/home",
-        element: <QuizBrowse />,
+        element: (
+          <AuthorizedRoute
+            element={<QuizBrowse />}
+            allowedRoles={["0", "1", "2"]}
+            userRole={userRole}
+          />
+        ),
       },
       {
         path: "/quiz-list",
         element: (
           <AuthorizedRoute
-            element={<BootstrapTable />}
+            element={<QuizManagement />}
             allowedRoles={["0", "1", "2"]}
             userRole={userRole}
           />
@@ -94,7 +105,7 @@ export const IndexRouters = [
         ),
       },
       {
-        path: "/quiz-detail",
+        path: "/quiz-detail/",
         element: (
           <AuthorizedRoute
             element={<QuizDetail />}
@@ -114,7 +125,7 @@ export const IndexRouters = [
         ),
       },
       {
-        path: "/update",
+        path: "/update/:id", // Added :id for quiz update route
         element: (
           <AuthorizedRoute
             element={<UpdateQuestion />}
