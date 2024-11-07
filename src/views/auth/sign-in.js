@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Image, Form, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import Card from "../../../components/Card";
-import { useAuth } from "../../../components/auth";
+import Card from "../../components/Card";
+import { useAuth } from "../../components/auth";
 import axios from "axios";
-import auth1 from "../../../assets/images/auth/01.png";
+import auth1 from "../../assets/images/auth/01.png";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 function GoogleLoginButton() {
@@ -99,21 +99,17 @@ const SignIn = () => {
 
       // Save the JWT in localStorage
       localStorage.setItem("token", response.data.token);
-      const expirationTime = new Date();
-      expirationTime.setHours(expirationTime.getMinutes() + 3);
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("tokenExpiration", expirationTime);
 
-      HandleIsAuthenticated();
+      // Set token expiration (3 hours from now)
+      const expirationTime = new Date();
+      expirationTime.setHours(expirationTime.getHours() + 3); // Correcting the expiration time
+      localStorage.setItem("tokenExpiration", expirationTime);
 
       // Redirect to home or dashboard after successful login
       navigate("/home"); // Redirect using useNavigate
     } catch (err) {
       setError("Invalid credentials");
-      console.error(
-        `Login error with username ${username} and password ${password}:`,
-        err
-      );
+      console.error("Login error:", err); // Log error without showing credentials
     }
   };
 

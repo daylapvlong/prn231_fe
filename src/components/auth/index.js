@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 // Create the authentication context
 const AuthContext = createContext();
@@ -13,13 +14,15 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState(null);
-  const [userData, setUserData] = useState(null); // To store other user information if needed
+  const [userData, setUserData] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
     const checkAuthStatus = () => {
       const token = localStorage.getItem("token");
       const tokenExpiration = localStorage.getItem("tokenExpiration");
       const user = JSON.parse(localStorage.getItem("user"));
+
       if (user && user.role) {
         setUserRole(user.role);
       } else {
@@ -61,7 +64,7 @@ export const AuthProvider = ({ children }) => {
     return () => {
       window.removeEventListener("storage", checkAuthStatus);
     };
-  }, []);
+  }, [location.pathname]);
 
   const logout = () => {
     localStorage.removeItem("token");

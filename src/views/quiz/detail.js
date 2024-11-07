@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import FlashcardDeck from "../../../components/quiz/QuizCard";
-import FlashcardList from "../../../components/quiz/QuizList";
-import { useAuth } from "../../../components/auth/index";
+import FlashcardDeck from "../../components/quiz/QuizCard";
+import FlashcardList from "../../components/quiz/QuizList";
+import { useAuth } from "../../components/auth/index";
 import {
   Users,
   Star,

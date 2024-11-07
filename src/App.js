@@ -20,7 +20,9 @@ function App({ children }) {
   return (
     <div className="App">
       {/* Wrap your application with AuthProvider */}
-      <AuthProvider>{children}</AuthProvider>
+      <AuthProvider>
+        {children} {/* This will render your routed components */}
+      </AuthProvider>
     </div>
   );
 }

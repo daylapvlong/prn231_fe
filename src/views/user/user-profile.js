@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Image, Form, Button } from "react-bootstrap";
-import Card from "../../../components/Card";
+import Card from "../../components/Card";
 
 // img
-import avatars1 from "../../../assets/images/avatars/01.png";
+import avatars1 from "../../assets/images/avatars/01.png";
 
 const UserProfile = () => {
   const [notification, setNotification] = useState(null);

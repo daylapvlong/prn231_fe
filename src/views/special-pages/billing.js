@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Table } from "react-bootstrap";
-import Card from "../../../components/Card";
+import Card from "../../components/Card";
 import { useOutletContext } from "react-router-dom";
 
 const Billing = () => {

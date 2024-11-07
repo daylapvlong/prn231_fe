@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Row, Col, Image, Form, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import Card from "../../../components/Card";
+import Card from "../../components/Card";
 
 // img
-import auth2 from "../../../assets/images/auth/02.png";
+import auth2 from "../../assets/images/auth/02.png";
 
 const Recoverpw = () => {
   const navigate = useNavigate();

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Row, Col, Image, Form, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import Card from "../../../components/Card";
+import Card from "../../components/Card";
 import axios from "axios"; // Import Axios
 // img
-import auth5 from "../../../assets/images/auth/05.png";
+import auth5 from "../../assets/images/auth/05.png";
 
 const SignUp = () => {
   const [username, setUsername] = useState("");
