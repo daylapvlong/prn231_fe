@@ -5,7 +5,6 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 
 // Layout and components
-import BoxedFancy from "./layouts/dashboard/boxed-fancy";
 import Admin from "./views/admin/admin";
 import Billing from "./views/special-pages/billing";
 import PaymentSuccess from "./views/special-pages/success";
