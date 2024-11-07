@@ -287,13 +287,20 @@ export default function CreateCourses() {
       return;
     }
 
+    const getBase64WithoutPrefix = (base64String) => {
+      // Remove the "data:image/png;base64," part
+      return base64String.split(",")[1];
+    };
+
     const courseData = {
       courseName: courseName,
       publish: true,
       totalJoined: 0,
       createdBy: 0,
       createdAt: new Date().toISOString(),
-      image: courseImage ? await getBase64(courseImage) : "",
+      image: courseImage
+        ? getBase64WithoutPrefix(await getBase64(courseImage))
+        : "",
       category: selectedCategory,
     };
 

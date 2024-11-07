@@ -161,7 +161,6 @@ export default function UpdateQuestions() {
         })),
       }));
 
-      // Use Promise.all to handle multiple requests concurrently
       const updatePromises = updatedQuestions.map((question) =>
         axios.post("http://localhost:5038/api/question/update", question, {
           params: {
@@ -170,19 +169,58 @@ export default function UpdateQuestions() {
         })
       );
 
-      // Wait for all updates to complete
       await Promise.all(updatePromises);
 
-      console.log("Questions updated:", updatedQuestions);
       setNotification({
         type: "success",
         message: "Questions updated successfully!",
       });
     } catch (error) {
-      console.error("Error updating questions:", error);
       setNotification({
         type: "error",
         message: "Failed to update questions. Please try again.",
+      });
+    }
+  };
+
+  const addNewQuestion = async () => {
+    try {
+      const newQuestion = {
+        questionText: "New question text",
+        options: [
+          { optionText: "Option 1", isCorrect: true },
+          { optionText: "Option 2", isCorrect: false },
+        ],
+      };
+
+      const response = await axios.post(
+        "http://localhost:5038/api/Question/CreateQuestion",
+        newQuestion
+      );
+
+      const createdQuestion = response.data;
+
+      // Append the new question to the questions list
+      setQuestions([
+        ...questions,
+        {
+          ...createdQuestion,
+          type: "one", // Assuming the new question has a single correct answer by default
+          options: createdQuestion.options.map((o) => ({
+            ...o,
+            isCorrect: o.isCorrect,
+          })),
+        },
+      ]);
+
+      setNotification({
+        type: "success",
+        message: "New question added successfully!",
+      });
+    } catch (error) {
+      setNotification({
+        type: "error",
+        message: "Failed to add new question. Please try again.",
       });
     }
   };
@@ -292,6 +330,14 @@ export default function UpdateQuestions() {
           </button>
         </div>
       ))}
+
+      <button
+        type="button"
+        onClick={addNewQuestion}
+        className="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+      >
+        <Plus className="w-5 h-5 mr-2" /> Add New Question
+      </button>
 
       <button
         type="button"

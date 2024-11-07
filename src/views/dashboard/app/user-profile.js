@@ -9,7 +9,6 @@ const UserProfile = () => {
   const [notification, setNotification] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const userId = 1;
 
   const [formData, setFormData] = useState({
     username: "",
@@ -18,6 +17,7 @@ const UserProfile = () => {
     password: "",
     confirmPassword: "",
     role: "",
+    id: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -115,7 +115,7 @@ const UserProfile = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5038/api/user/update/${userId}`,
+        `http://localhost:5038/api/user/update/${formData.id}`,
         {
           method: "PUT",
           headers: {
@@ -173,6 +173,12 @@ const UserProfile = () => {
               </Card.Header>
               <Card.Body>
                 <Form onSubmit={handleSubmit}>
+                  <Form.Control
+                    as="id"
+                    id="id"
+                    value={formData.id}
+                    hidden={true}
+                  ></Form.Control>
                   <div className="profile-img-edit position-relative">
                     <Image
                       className="theme-color-default-img profile-pic rounded avatar-100"

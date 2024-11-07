@@ -49,7 +49,7 @@ const BrowseCourses = () => {
     );
   }, [searchTerm, selectedCategory, courses]);
 
-  const addToCart = async (courseId) => {
+  const addToCart = async (courseId, price) => {
     try {
       const cookieString = document.cookie;
       let cartListCookie = cookieString
@@ -66,7 +66,7 @@ const BrowseCourses = () => {
       if (cartList[courseId]) {
         alert("This course is already in your cart.");
       } else {
-        cartList[courseId] = { courseId };
+        cartList[courseId] = { courseId, price };
 
         // Set the cookie without HttpOnly, and optionally without Secure
         document.cookie = `cartList=${encodeURIComponent(
@@ -138,7 +138,10 @@ const BrowseCourses = () => {
           >
             <div className="p-6 flex-grow">
               <img
-                src={course.image?.trim() || "default-image.png"}
+                src={
+                  `data:image/png;base64,${course.image?.trim()}` ||
+                  "default-image.png"
+                }
                 alt={course.courseName}
                 className="mb-4"
               />{" "}
@@ -163,7 +166,7 @@ const BrowseCourses = () => {
               </button>
               <button
                 className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out"
-                onClick={() => addToCart(course.id)}
+                onClick={() => addToCart(course.id, course.price)}
               >
                 Add to Cart
               </button>

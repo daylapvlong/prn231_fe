@@ -8,6 +8,7 @@ import BootstrapTable from "../views/dashboard/table/bootstrap-table";
 import UserProfile from "../views/dashboard/app/user-profile";
 import UserList from "../views/dashboard/app/user-list";
 import Billing from "../views/dashboard/special-pages/billing";
+import PaymentSuccess from "../views/dashboard/special-pages/success";
 import Admin from "../views/dashboard/admin/admin";
 import QuizBrowse from "../views/dashboard/quiz/browse";
 import QuizTaker from "../views/dashboard/quiz";
@@ -43,6 +44,10 @@ export const IndexRouters = [
             userRole={userRole}
           />
         ),
+      },
+      {
+        path: "/success",
+        element: <PaymentSuccess />,
       },
       {
         path: "/user-profile",
