@@ -70,7 +70,7 @@ const HeaderStyle = memo(({ cartCount, fetchCartData }) => {
             </Link>
           </Navbar.Brand>
 
-          <HorizontalNav />
+          {isAuthenticated ? <HorizontalNav /> : <></>}
 
           <Navbar.Brand
             className="col-lg-3 justify-end"
