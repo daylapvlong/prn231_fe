@@ -60,14 +60,15 @@ const Recoverpw = () => {
         <Row className="m-0 align-items-center bg-white vh-100">
           <Col
             md="6"
-            className="d-md-block d-none bg-primary p-0 mt-n1 vh-100 overflow-hidden"
+            className="d-md-block d-none bg-primary p-0 mt-n1 h-screen overflow-hidden"
           >
             <Image
               src={auth2}
-              className="img-fluid gradient-main animated-scaleX"
+              className="object-cover w-full h-full"
               alt="images"
             />
           </Col>
+
           <Col md="6" className="p-0">
             <Card className="card-transparent auth-card shadow-none d-flex justify-content-center mb-0">
               <Card.Body>
