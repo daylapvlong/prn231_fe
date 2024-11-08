@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Row, Col, Image, Form, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import Card from "../../components/Card";
-import { useAuth } from "../../components/auth";
+import { Eye, EyeOff } from "lucide-react";
 import axios from "axios";
 import auth1 from "../../assets/images/auth/01.png";
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -113,7 +113,11 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate(); // Use useNavigate instead of history
-  // const { HandleIsAuthenticated } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -261,14 +265,29 @@ const SignIn = () => {
                               <Form.Label htmlFor="password" className="">
                                 Password
                               </Form.Label>
-                              <Form.Control
-                                type="password"
-                                id="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder=" "
-                                required
-                              />
+                              <div className="input-group">
+                                <Form.Control
+                                  type={showPassword ? "text" : "password"}
+                                  id="password"
+                                  value={password}
+                                  onChange={(e) => setPassword(e.target.value)}
+                                  placeholder=" "
+                                  required
+                                />
+                                <div className="input-group-append">
+                                  <span
+                                    className="input-group-text"
+                                    onClick={togglePasswordVisibility}
+                                    style={{ cursor: "pointer" }}
+                                  >
+                                    {showPassword ? (
+                                      <EyeOff size={20} />
+                                    ) : (
+                                      <Eye size={20} />
+                                    )}
+                                  </span>
+                                </div>
+                              </div>
                             </Form.Group>
                           </Col>
                           <Col

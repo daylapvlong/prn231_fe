@@ -2,12 +2,7 @@ import React from "react";
 import { Offcanvas, Navbar, Container, Nav } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 
-const HorizontalNav = () => {
-  //     const [show, setShow] = useState(false);
-  //     const handleShow = () => setShow(true);
-
-  //   const handleClose = () => setShow(false);
-  //location
+const HorizontalNav = ({ role }) => {
   let location = useLocation();
   return (
     <>
@@ -69,38 +64,81 @@ const HorizontalNav = () => {
           </Offcanvas.Header>
 
           <Nav>
-            <Nav.Item as="li">
-              <Link
-                className={`${
-                  location.pathname === "/horizontal" ? "active" : ""
-                } nav-link `}
-                to="/dashboard"
-              >
-                {" "}
-                Dashboard{" "}
-              </Link>
-            </Nav.Item>
-            <Nav.Item as="li">
-              <Link
-                className={`${
-                  location.pathname === "/dual-horizontal" ? "active" : ""
-                } nav-link `}
-                to="/quiz-list"
-              >
-                {" "}
-                Manage Quiz{" "}
-              </Link>
-            </Nav.Item>
-            <Nav.Item as="li">
-              <Link
-                className={`${
-                  location.pathname === "/dual-compact" ? "active" : ""
-                } nav-link `}
-                to="/user-list"
-              >
-                <span className="item-name">Browse Quiz</span>
-              </Link>
-            </Nav.Item>
+            {role === "Student" ||
+              (role === "Teacher" && (
+                <>
+                  <Nav.Item as="li">
+                    <Link
+                      className={`${
+                        location.pathname === "/horizontal" ? "active" : ""
+                      } nav-link `}
+                      to="/dashboard"
+                    >
+                      {" "}
+                      Browse Quiz{" "}
+                    </Link>
+                  </Nav.Item>
+                  <Nav.Item as="li">
+                    <Link
+                      className={`${
+                        location.pathname === "/quiz-list" ? "active" : ""
+                      } nav-link `}
+                      to="/quiz-list"
+                    >
+                      My Quiz
+                    </Link>
+                  </Nav.Item>
+                </>
+              ))}
+            {role === "Teacher" && (
+              <>
+                <Nav.Item as="li">
+                  <Link
+                    className={`${
+                      location.pathname === "/quiz-manage" ? "active" : ""
+                    } nav-link `}
+                    to="/quiz-manage"
+                  >
+                    Manage Quiz
+                  </Link>
+                </Nav.Item>
+              </>
+            )}
+
+            {role === "Admin" && (
+              <>
+                <Nav.Item as="li">
+                  <Link
+                    className={`${
+                      location.pathname === "/dual-compact" ? "active" : ""
+                    } nav-link `}
+                    to="/dashboard"
+                  >
+                    <span className="item-name">Dashboard</span>
+                  </Link>
+                </Nav.Item>
+                <Nav.Item as="li">
+                  <Link
+                    className={`${
+                      location.pathname === "/dual-compact" ? "active" : ""
+                    } nav-link `}
+                    to="/user-list"
+                  >
+                    <span className="item-name">Manage User</span>
+                  </Link>
+                </Nav.Item>
+                <Nav.Item as="li">
+                  <Link
+                    className={`${
+                      location.pathname === "/dual-compact" ? "active" : ""
+                    } nav-link `}
+                    to="/user-list"
+                  >
+                    <span className="item-name">Manage Category</span>
+                  </Link>
+                </Nav.Item>
+              </>
+            )}
           </Nav>
         </Container>
       </Navbar>
