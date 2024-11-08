@@ -12,7 +12,8 @@ import PaymentSuccess from "./views/special-pages/success";
 import UserProfile from "./views/user/user-profile";
 import UserList from "./views/user/user-list";
 import QuizBrowse from "./views/quiz/browse";
-import QuizManagement from "./views/table/bootstrap-table";
+import QuizManagement from "./views/table/manageQuizList";
+import QuizAttemptList from "./views/table/manageAttemptQuiz";
 import QuizTaker from "./views/quiz";
 import QuizDetail from "./views/quiz/detail";
 import CreateCourses from "./views/quiz/create";
@@ -95,8 +96,18 @@ root.render(
               path="quiz-list"
               element={
                 <AuthorizedRoute
-                  element={<QuizManagement />}
+                  element={<QuizAttemptList />}
                   allowedRoles={["0", "1", "2"]}
+                  userRole={userRole}
+                />
+              }
+            />
+            <Route
+              path="quiz-manage"
+              element={
+                <AuthorizedRoute
+                  element={<QuizManagement />}
+                  allowedRoles={["1"]}
                   userRole={userRole}
                 />
               }

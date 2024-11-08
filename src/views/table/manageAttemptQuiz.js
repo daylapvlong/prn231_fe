@@ -1,29 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Loader, AlertCircle } from "lucide-react";
-import { Image } from "react-bootstrap";
 
-export default function QuizManagement() {
+export default function QuizAttemptList() {
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userId, setUserId] = useState(null);
-  const [userRole, setUserRole] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const userInfo = getUserId();
-    if (userInfo) {
-      setUserId(userInfo.id);
-      setUserRole(userInfo.role);
+    const userId = getUserId();
+    if (userId) {
+      setUserId(userId);
     }
   }, []);
 
   useEffect(() => {
-    if (userId && userRole) {
+    if (userId) {
       fetchQuizzes();
     }
-  }, [userId, userRole]);
+  }, [userId]);
 
   const getUserId = () => {
     // Retrieve the user data from localStorage
@@ -38,24 +35,12 @@ export default function QuizManagement() {
     const userData = JSON.parse(userDataString);
 
     // Clean up the user data by trimming whitespace and handling null values
-    return {
-      id: userData.id,
-      role: userData.role,
-    };
+    return userData.id;
   };
 
   const fetchQuizzes = async () => {
     try {
-      let url = "";
-      if (userRole === "1") {
-        url = `http://localhost:5038/api/Course/GetMyManageCourse?userId=${userId}`;
-      } else if (userRole === "2") {
-        url = `http://localhost:5038/api/Course/GetMyAttemptCourse?userId=${userId}`;
-      }
-
-      if (!url) {
-        throw new Error("Invalid user role");
-      }
+      const url = `http://localhost:5038/api/Course/GetMyManageCourse?userId=${userId}`;
 
       const response = await fetch(url);
       if (!response.ok) {
@@ -114,23 +99,9 @@ export default function QuizManagement() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Conditionally render the Create button if the userRole is "1" */}
-      {userRole === "1" && (
-        <div className="mb-6 flex justify-between">
-          <h1 className="text-3xl font-bold mb-6">My Quizzes</h1>
-          <button
-            onClick={() => navigate("/create")} // Replace with your route
-            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition duration-200"
-          >
-            Create New Quiz
-          </button>
-        </div>
-      )}
-      {userRole === "2" && (
-        <div className="mb-6 flex justify-between">
-          <h1 className="text-3xl font-bold mb-6">My Purchased Quizzes</h1>
-        </div>
-      )}
+      <div className="mb-6 flex justify-between">
+        <h1 className="text-3xl font-bold mb-6">My Purchased Quizzes</h1>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {quizzes.map((quiz) => (
           <div

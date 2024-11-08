@@ -4,10 +4,14 @@ import React, { useState, useEffect } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import QuizImportModal from "../../components/quiz/QuizImportModal";
 
 export default function UpdateQuestions() {
   const [questions, setQuestions] = useState([]);
   const [notification, setNotification] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCourseId, setSelectedCourseId] = useState(null);
+
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const courseId = queryParams.get("courseId");
@@ -225,6 +229,11 @@ export default function UpdateQuestions() {
     }
   };
 
+  const handleImportQuiz = () => {
+    setSelectedCourseId(courseId);
+    setIsModalOpen(true);
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-6">
       {notification && (
@@ -239,7 +248,15 @@ export default function UpdateQuestions() {
         </div>
       )}
 
-      <h1 className="text-2xl font-bold mb-6">Update Questions</h1>
+      <div className="flex justify-between mb-6">
+        <h1 className="text-2xl font-bold">Update Questions</h1>
+        <button
+          onClick={() => handleImportQuiz()}
+          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition duration-200"
+        >
+          Import Questions
+        </button>
+      </div>
 
       {questions.map((question) => (
         <div
@@ -346,6 +363,12 @@ export default function UpdateQuestions() {
       >
         Update All Questions
       </button>
+
+      <QuizImportModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        courseId={selectedCourseId}
+      />
     </div>
   );
 }
