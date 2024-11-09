@@ -18,6 +18,7 @@ import QuizTaker from "./views/quiz";
 import QuizDetail from "./views/quiz/detail";
 import CreateCourses from "./views/quiz/create";
 import UpdateQuestion from "./views/quiz/update";
+import UserManagement from "./views/quiz/manage";
 import AuthorizedRoute from "./components/auth/authRoute";
 import SignIn from "./views/auth/sign-in";
 import SignUp from "./views/auth/sign-up";
@@ -147,6 +148,16 @@ root.render(
               element={
                 <AuthorizedRoute
                   element={<UpdateQuestion />}
+                  allowedRoles={["1"]}
+                  userRole={userRole}
+                />
+              }
+            />
+            <Route
+              path="user-manage"
+              element={
+                <AuthorizedRoute
+                  element={<UserManagement />}
                   allowedRoles={["1"]}
                   userRole={userRole}
                 />

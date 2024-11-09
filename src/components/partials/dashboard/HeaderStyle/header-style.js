@@ -78,21 +78,24 @@ const HeaderStyle = memo(({ cartCount, fetchCartData }) => {
           >
             {isAuthenticated ? (
               <ul className="navbar-nav ms-auto mb-2 mb-lg-0 items-center space-x-2">
-                <li className="nav-item">
-                  <div
-                    className="relative hover:cursor-pointer"
-                    onClick={() => {
-                      window.location.href = "/billing";
-                    }}
-                  >
-                    <ShoppingCart className="w-6 h-6 text-gray-600" />
-                    {cartCount > 0 && (
-                      <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
-                        {cartCount}
-                      </span>
-                    )}
-                  </div>
-                </li>
+                {userInfo.role !== "Admin" && (
+                  <li className="nav-item">
+                    <div
+                      className="relative hover:cursor-pointer"
+                      onClick={() => {
+                        window.location.href = "/billing";
+                      }}
+                    >
+                      <ShoppingCart className="w-6 h-6 text-gray-600" />
+                      {cartCount > 0 && (
+                        <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                          {cartCount}
+                        </span>
+                      )}
+                    </div>
+                  </li>
+                )}
+
                 <Dropdown as="li" className="nav-item">
                   <Dropdown.Toggle
                     as={CustomToggle}

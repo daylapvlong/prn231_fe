@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Image, Form, Button } from "react-bootstrap";
 import Card from "../../components/Card";
+import UserBills from "../../components/user/bill";
 
 // img
 import avatars1 from "../../assets/images/avatars/01.png";
@@ -312,7 +313,9 @@ const UserProfile = () => {
           </Col>
           <Col xl="9" lg="8">
             <Card>
-              <Card.Body></Card.Body>
+              <Card.Body>
+                <UserBills userId={formData.id} />
+              </Card.Body>
             </Card>
           </Col>
         </Row>
