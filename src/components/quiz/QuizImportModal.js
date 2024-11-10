@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
 
-export default function QuizImportModal({ isOpen, onClose }) {
+export default function QuizImportModal({ isOpen, onClose, courseId }) {
   const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    if (e.target.files.length > 0) {
+      setFile(e.target.files[0]);
+    }
   };
 
   const handleImport = async () => {
@@ -24,7 +26,7 @@ export default function QuizImportModal({ isOpen, onClose }) {
 
     try {
       const response = await fetch(
-        "http://localhost:5038/api/Question/ImportListQuestion",
+        `http://localhost:5038/api/Question/ImportListQuestion?courseId=${courseId}`,
         {
           method: "POST",
           body: formData,
