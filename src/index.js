@@ -25,6 +25,7 @@ import SignUp from "./views/auth/sign-up";
 import Recoverpw from "./views/auth/recoverpw";
 import Resetpw from "./views/auth/resetpw";
 import Error404 from "./views/errors/error404";
+import AccessDenied from "./views/errors/unallowed";
 
 // Mantine Provider and CSS normalization
 import { MantineProvider } from "@mantine/core";
@@ -170,6 +171,7 @@ root.render(
           <Route path="auth/sign-up" element={<SignUp />} />
           <Route path="auth/recoverpw" element={<Recoverpw />} />
           <Route path="auth/resetpw" element={<Resetpw />} />
+          <Route path="auth/denied" element={<AccessDenied />} />
 
           {/* Catch-all for undefined routes */}
           <Route path="*" element={<Error404 />} />

@@ -41,7 +41,7 @@ export default function QuizManagement() {
 
   const fetchQuizzes = async () => {
     try {
-      const url = `http://localhost:5038/api/Course/GetMyAttemptCourse?userId=${userId}`;
+      const url = `http://localhost:5038/api/Course/GetMyManageCourse?userId=${userId}`;
 
       const response = await fetch(url);
       if (!response.ok) {
@@ -58,6 +58,10 @@ export default function QuizManagement() {
 
   const handleQuizDetail = (id) => {
     navigate(`/quiz-detail?courseId=${id}`);
+  };
+
+  const handleUserDetail = (id) => {
+    navigate(`/user-manage?courseId=${id}`);
   };
 
   const formatDate = (dateString) => {
@@ -150,12 +154,20 @@ export default function QuizManagement() {
                 >
                   {quiz.publish ? "Published" : "Draft"}
                 </span>
-                <button
-                  onClick={() => handleQuizDetail(quiz.id)}
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200"
-                >
-                  View Details
-                </button>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => handleUserDetail(quiz.id)}
+                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200"
+                  >
+                    Manage Users
+                  </button>
+                  <button
+                    onClick={() => handleQuizDetail(quiz.id)}
+                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200"
+                  >
+                    View Details
+                  </button>
+                </div>
               </div>
             </div>
           </div>

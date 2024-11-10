@@ -40,7 +40,7 @@ export default function QuizAttemptList() {
 
   const fetchQuizzes = async () => {
     try {
-      const url = `http://localhost:5038/api/Course/GetMyManageCourse?userId=${userId}`;
+      const url = `http://localhost:5038/api/Course/GetMyAttemptCourse?userId=${userId}`;
 
       const response = await fetch(url);
       if (!response.ok) {
@@ -55,8 +55,12 @@ export default function QuizAttemptList() {
     }
   };
 
-  const handleQuizDetail = (id) => {
-    navigate(`/quiz-detail?courseId=${id}`);
+  const handleQuizDetail = (id, status) => {
+    if (status === 1) {
+      navigate(`/quiz-detail?courseId=${id}`);
+    } else {
+      navigate(`/auth/denied`);
+    }
   };
 
   const formatDate = (dateString) => {
@@ -143,7 +147,7 @@ export default function QuizAttemptList() {
                   {quiz.publish ? "Published" : "Draft"}
                 </span>
                 <button
-                  onClick={() => handleQuizDetail(quiz.id)}
+                  onClick={() => handleQuizDetail(quiz.id, quiz.status)}
                   className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200"
                 >
                   View Details
