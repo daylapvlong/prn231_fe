@@ -12,6 +12,7 @@ const SignUp = () => {
   const [displayName, setDisplayName] = useState("");
   const [password, setPassword] = useState("");
   const [repassword, setRepassword] = useState("");
+  const [role, setRole] = useState("");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -34,7 +35,7 @@ const SignUp = () => {
         email,
         displayName,
         password,
-        role: 2,
+        role,
       });
 
       setSuccessMessage("Sign Up successful!"); // Display success message
@@ -200,6 +201,28 @@ const SignUp = () => {
                             />
                           </Form.Group>
                         </Col>
+                        <Row>
+                          {/* Other form fields */}
+                          <Col lg="12">
+                            <Form.Group className="form-group">
+                              <Form.Label htmlFor="role">
+                                Select Role
+                              </Form.Label>
+                              <Form.Control
+                                as="select"
+                                id="role"
+                                value={role}
+                                onChange={(e) => setRole(e.target.value)}
+                                required
+                              >
+                                <option value="">Select your role</option>
+                                <option value="2">Student</option>
+                                <option value="1">Teacher</option>
+                              </Form.Control>
+                            </Form.Group>
+                          </Col>
+                          {/* Other form fields */}
+                        </Row>
                         <Col lg="12" className="d-flex justify-content-center">
                           <Form.Check className="mb-3 form-check">
                             <Form.Check.Input

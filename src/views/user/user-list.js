@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Image, Modal, Form, Button } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Image,
+  Modal,
+  Form,
+  Button,
+  InputGroup,
+} from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Card from "../../components/Card";
 import axios from "axios";
@@ -9,6 +17,8 @@ const UserList = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [updateData, setUpdateData] = useState({ role: "", status: "" });
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredUsers, setFilteredUsers] = useState([]);
 
   useEffect(() => {
     const fetchUserList = async () => {
@@ -22,6 +32,13 @@ const UserList = () => {
 
     fetchUserList();
   }, []);
+
+  useEffect(() => {
+    const filtered = userList.filter((user) =>
+      user.displayName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredUsers(filtered);
+  }, [userList, searchTerm]);
 
   const handleEditClick = (user) => {
     setSelectedUser(user);
@@ -68,6 +85,10 @@ const UserList = () => {
     }
   };
 
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
   return (
     <>
       <div>
@@ -75,8 +96,17 @@ const UserList = () => {
           <Col sm="12">
             <Card>
               <Card.Header className="d-flex justify-content-between">
-                <div className="header-title">
+                <div className="header-title flex items-center space-x-4">
                   <h4 className="card-title">User List</h4>
+                  <InputGroup className="w-auto">
+                    <Form.Control
+                      type="text"
+                      placeholder="Search user..."
+                      aria-label="Search"
+                      value={searchTerm}
+                      onChange={handleSearch}
+                    />
+                  </InputGroup>
                 </div>
               </Card.Header>
               <Card.Body className="px-0">
@@ -99,7 +129,7 @@ const UserList = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {userList.map((item, idx) => (
+                      {filteredUsers.map((item, idx) => (
                         <tr key={idx}>
                           <td className="text-center">
                             <Image

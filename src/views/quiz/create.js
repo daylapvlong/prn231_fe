@@ -166,6 +166,7 @@ const QuestionForm = ({ question, onUpdate, onDelete, error }) => {
 
 export default function CreateCourses() {
   const [courseName, setCourseName] = useState("");
+  const [coursePrice, setCoursePrice] = useState("");
   const [courseImage, setCourseImage] = useState(null);
   const [questions, setQuestions] = useState([
     {
@@ -324,6 +325,7 @@ export default function CreateCourses() {
         ? getBase64WithoutPrefix(await getBase64(courseImage))
         : "",
       category: selectedCategory,
+      price: coursePrice,
     };
 
     const questionsData = questions.map((q) => ({
@@ -355,7 +357,10 @@ export default function CreateCourses() {
         throw new Error("Failed to create course");
       }
 
-      const result = await response.json();
+      // Check if response has content before attempting to parse it
+      const text = await response.text();
+      const result = text ? JSON.parse(text) : {}; // Parse only if response is not empty
+
       console.log("Course created successfully:", result);
       setNotification({
         type: "success",
@@ -453,6 +458,27 @@ export default function CreateCourses() {
           </select>
           {errors.category && (
             <p className="text-red-500 text-sm mt-1">{errors.category}</p>
+          )}
+        </div>
+        <div>
+          <label
+            htmlFor="coursePrice"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Course Price
+          </label>
+          <input
+            type="text"
+            id="coursePrice"
+            value={coursePrice}
+            onChange={(e) => setCoursePrice(e.target.value)}
+            className={`w-full p-2 border rounded-md ${
+              errors.coursePrice ? "border-red-500" : ""
+            }`}
+            placeholder="Enter course price"
+          />
+          {errors.coursePrice && (
+            <p className="text-red-500 text-sm mt-1">{errors.coursePrice}</p>
           )}
         </div>
         <div>

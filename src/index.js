@@ -14,11 +14,13 @@ import UserList from "./views/user/user-list";
 import QuizBrowse from "./views/quiz/browse";
 import QuizManagement from "./views/table/manageQuizList";
 import QuizAttemptList from "./views/table/manageAttemptQuiz";
+import CategoryManagement from "./views/table/manageCategory";
 import QuizTaker from "./views/quiz";
 import QuizDetail from "./views/quiz/detail";
 import CreateCourses from "./views/quiz/create";
 import UpdateQuestion from "./views/quiz/update";
 import UserManagement from "./views/quiz/manage";
+import CourseSummaryDashboard from "./views/quiz/dashboard";
 import AuthorizedRoute from "./components/auth/authRoute";
 import SignIn from "./views/auth/sign-in";
 import SignUp from "./views/auth/sign-up";
@@ -79,7 +81,7 @@ root.render(
               element={
                 <AuthorizedRoute
                   element={<UserList />}
-                  allowedRoles={["0", "1", "2"]}
+                  allowedRoles={["0"]}
                   userRole={userRole}
                 />
               }
@@ -160,6 +162,26 @@ root.render(
                 <AuthorizedRoute
                   element={<UserManagement />}
                   allowedRoles={["1"]}
+                  userRole={userRole}
+                />
+              }
+            />
+            <Route
+              path="category-manage"
+              element={
+                <AuthorizedRoute
+                  element={<CategoryManagement />}
+                  allowedRoles={["0"]}
+                  userRole={userRole}
+                />
+              }
+            />
+            <Route
+              path="quiz-dashboard"
+              element={
+                <AuthorizedRoute
+                  element={<CourseSummaryDashboard />}
+                  allowedRoles={["0", "1"]}
                   userRole={userRole}
                 />
               }

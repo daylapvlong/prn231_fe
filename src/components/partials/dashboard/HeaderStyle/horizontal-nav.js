@@ -64,14 +64,17 @@ const HorizontalNav = ({ role }) => {
           </Offcanvas.Header>
 
           <Nav>
-            {(role === "Student" || role === "2" || role === "Teacher") && (
+            {(role === "Student" ||
+              role === "2" ||
+              role === "Teacher" ||
+              role === "1") && (
               <>
                 <Nav.Item as="li">
                   <Link
                     className={`${
                       location.pathname === "/horizontal" ? "active" : ""
                     } nav-link `}
-                    to="/dashboard"
+                    to="/home"
                   >
                     {" "}
                     Browse Quiz{" "}
@@ -131,7 +134,7 @@ const HorizontalNav = ({ role }) => {
                     className={`${
                       location.pathname === "/dual-compact" ? "active" : ""
                     } nav-link `}
-                    to="/user-list"
+                    to="/category-manage"
                   >
                     <span className="item-name">Manage Category</span>
                   </Link>

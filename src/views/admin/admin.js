@@ -9,6 +9,27 @@ import {
   List,
   Settings,
 } from "lucide-react";
+import { Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -16,10 +37,22 @@ export default function AdminDashboard() {
     totalQuizzes: 0,
     purchasedQuizzes: 0,
     totalRevenue: 0,
+    userPerMonth: [],
   });
-  const [recentActivities, setRecentActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [bills, setBills] = useState([]);
+
+  useEffect(() => {
+    // Fetch bills from the API
+    fetch("http://localhost:5038/api/Bill/GetAllBill")
+      .then((response) => response.json())
+      .then((data) => {
+        // Limit to the first 5 bills
+        setBills(data.slice(0, 5));
+      })
+      .catch((error) => console.error("Error fetching bills:", error));
+  }, []);
 
   useEffect(() => {
     fetchDashboardData();
@@ -28,26 +61,64 @@ export default function AdminDashboard() {
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      // Replace with your actual API endpoints
       const statsResponse = await fetch(
         "http://localhost:5038/api/Dashboard/Summary"
       );
-      // const activitiesResponse = await fetch('http://localhost:5038/api/Admin/GetRecentActivities');
 
       if (!statsResponse.ok) {
         throw new Error("Failed to fetch dashboard data");
       }
 
       const statsData = await statsResponse.json();
-      // const activitiesData = await activitiesResponse.json();
-
       setStats(statsData);
-      // setRecentActivities(activitiesData);
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
+  };
+
+  const chartData = {
+    labels: stats.userPerMonth.map(
+      (item) => `${item.year}-${item.month.toString().padStart(2, "0")}`
+    ),
+    datasets: [
+      {
+        label: "Number of Registrations",
+        data: stats.userPerMonth.map((item) => item.numberOfRegister),
+        fill: false,
+        borderColor: "rgb(75, 192, 192)",
+        tension: 0.1,
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+      title: {
+        display: true,
+        text: "User Registrations per Month",
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: "Number of Registrations",
+        },
+      },
+      x: {
+        title: {
+          display: true,
+          text: "Month",
+        },
+      },
+    },
   };
 
   if (loading) {
@@ -128,35 +199,39 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Recent Activities and Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Recent Activities */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-4">Recent Activities</h2>
-          <ul className="space-y-4">
-            {/* {recentActivities.map((activity, index) => (
-              <li key={index} className="flex items-center space-x-3">
-                <span className="text-blue-500">
-                  <List />
-                </span>
-                <span>{activity}</span>
-              </li>
-            ))} */}
-          </ul>
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="bg-white rounded-lg shadow-md p-6 flex flex-col">
+          <h2 className="text-xl font-semibold">User Registrations</h2>
+          <div className="h-96 flex-1">
+            <Line data={chartData} options={chartOptions} />
+          </div>
         </div>
 
-        {/* Charts */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-4">Analytics Overview</h2>
-          <div className="space-y-4">
-            <div className="h-48 bg-gray-200 rounded flex items-center justify-center">
-              <BarChart2 className="w-12 h-12 text-gray-400" />
-              <span className="ml-2 text-gray-500">Bar Chart Placeholder</span>
-            </div>
-            <div className="h-48 bg-gray-200 rounded flex items-center justify-center">
-              <PieChart className="w-12 h-12 text-gray-400" />
-              <span className="ml-2 text-gray-500">Pie Chart Placeholder</span>
-            </div>
+        {/* Recent Activities */}
+        <div className="bg-white rounded-lg shadow-md p-6 flex flex-col">
+          <h2 className="text-xl font-semibold">Recent Activities</h2>
+          <div className="h-96 flex-1 overflow-y-auto">
+            {bills.length > 0 ? (
+              <table className="min-w-full table-auto">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="py-2 px-4 text-left">Bill ID</th>
+                    <th className="py-2 px-4 text-left">Total Payment</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {bills.map((bill) => (
+                    <tr key={bill.id} className="border-b">
+                      <td className="py-2 px-4">{bill.id}</td>
+                      <td className="py-2 px-4">${bill.totalPayment}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>No recent activities to display.</p>
+            )}
           </div>
         </div>
       </div>
