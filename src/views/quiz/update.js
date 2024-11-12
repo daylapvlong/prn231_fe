@@ -123,14 +123,14 @@ export default function UpdateQuestions() {
   };
 
   const addOption = (questionId) => {
-    setQuestions(
-      questions.map((q) => {
+    setQuestions((prevQuestions) =>
+      prevQuestions.map((q) => {
         if (q.id === questionId && q.options.length < 5) {
           return {
             ...q,
             options: [
               ...q.options,
-              { id: 0, optionText: "", isCorrect: false },
+              { id: q.options.length + 1, optionText: "", isCorrect: false },
             ],
           };
         }
@@ -151,6 +151,27 @@ export default function UpdateQuestions() {
         return q;
       })
     );
+  };
+
+  const deleteQuestion = async (questionId) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:5038/api/Question/DeleteQuestion?questionId=${questionId}`
+      );
+
+      fetchQuestions();
+
+      setNotification({
+        type: "success",
+        message: "Question deleted successfully!",
+      });
+    } catch (error) {
+      console.error("Error delete questions:", error);
+      setNotification({
+        type: "error",
+        message: "Failed to delete questions. Please try again.",
+      });
+    }
   };
 
   const handleUpdate = async () => {
@@ -197,31 +218,37 @@ export default function UpdateQuestions() {
         ],
       };
 
+      // Make API request to create a new question
       const response = await axios.post(
-        "http://localhost:5038/api/Question/CreateQuestion",
+        `http://localhost:5038/api/Question/CreateQuestion?courseId=${courseId}`,
         newQuestion
       );
 
-      const createdQuestion = response.data;
+      // Check if response status is 200 (OK)
+      if (response.status === 200) {
+        // Since response.data is null, simulate adding a new question locally
+        const createdQuestion = {
+          questionText: newQuestion.questionText,
+          options: newQuestion.options,
+          type: "one", // Default type as single correct answer
+        };
 
-      // Append the new question to the questions list
-      setQuestions([
-        ...questions,
-        {
-          ...createdQuestion,
-          type: "one", // Assuming the new question has a single correct answer by default
-          options: createdQuestion.options.map((o) => ({
-            ...o,
-            isCorrect: o.isCorrect,
-          })),
-        },
-      ]);
+        setQuestions((prevQuestions) => [
+          ...prevQuestions,
+          createdQuestion, // Add the new question to the state
+        ]);
 
-      setNotification({
-        type: "success",
-        message: "New question added successfully!",
-      });
+        setNotification({
+          type: "success",
+          message: "New question added successfully!",
+        });
+
+        window.location.reload();
+      } else {
+        throw new Error("Failed to create new question.");
+      }
     } catch (error) {
+      console.error("Error adding new question:", error);
       setNotification({
         type: "error",
         message: "Failed to add new question. Please try again.",
@@ -337,14 +364,23 @@ export default function UpdateQuestions() {
             ))}
           </div>
 
-          <button
-            type="button"
-            onClick={() => addOption(question.id)}
-            disabled={question.options.length >= 5}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Plus className="w-5 h-5 mr-2" /> Add Option
-          </button>
+          <div>
+            <button
+              type="button"
+              onClick={() => addOption(question.id)}
+              disabled={question.options.length >= 5}
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Plus className="w-5 h-5 mr-2" /> Add Option
+            </button>
+            <button
+              type="button"
+              onClick={() => deleteQuestion(question.id)}
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Plus className="w-5 h-5 mr-2" /> Delete Question
+            </button>
+          </div>
         </div>
       ))}
 
@@ -361,7 +397,7 @@ export default function UpdateQuestions() {
         onClick={handleUpdate}
         className="mt-4 w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
       >
-        Update All Questions
+        Save
       </button>
 
       <QuizImportModal

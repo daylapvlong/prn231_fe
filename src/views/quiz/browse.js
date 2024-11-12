@@ -26,7 +26,7 @@ const BrowseCourses = () => {
         );
         setCourses(response.data); // Assuming the response is a JSON array
       } catch (err) {
-        setError(err.response?.data?.message || err.message);
+        setError(err.response?.data || err.message);
       } finally {
         setLoading(false);
       }

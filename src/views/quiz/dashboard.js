@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Container, Row, Col, Card, Spinner, Alert } from "react-bootstrap";
+import { useLocation } from "react-router-dom";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -27,12 +28,15 @@ const CourseSummaryDashboard = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  let location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const courseId = queryParams.get("courseId");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5038/api/Dashboard/CourseSumary?courseID=8"
+          `http://localhost:5038/api/Dashboard/CourseSumary?courseID=${courseId}`
         );
         setData(response.data);
         setError(null);

@@ -42,6 +42,8 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [bills, setBills] = useState([]);
+  const [selectedBill, setSelectedBill] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false); // To control modal visibility
 
   useEffect(() => {
     // Fetch bills from the API
@@ -133,6 +135,16 @@ export default function AdminDashboard() {
     return <div className="text-red-500 text-center">{error}</div>;
   }
 
+  const handleModalOpen = (bill) => {
+    setSelectedBill(bill);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedBill(null);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
@@ -164,41 +176,6 @@ export default function AdminDashboard() {
         />
       </div>
 
-      {/* Quick Actions */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <QuickActionButton
-            icon={<Users />}
-            label="Manage Users"
-            onClick={() => {
-              /* Handle click */
-            }}
-          />
-          <QuickActionButton
-            icon={<BookOpen />}
-            label="Create Quiz"
-            onClick={() => {
-              /* Handle click */
-            }}
-          />
-          <QuickActionButton
-            icon={<BarChart2 />}
-            label="View Reports"
-            onClick={() => {
-              /* Handle click */
-            }}
-          />
-          <QuickActionButton
-            icon={<Settings />}
-            label="Settings"
-            onClick={() => {
-              /* Handle click */
-            }}
-          />
-        </div>
-      </div>
-
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="bg-white rounded-lg shadow-md p-6 flex flex-col">
@@ -218,6 +195,7 @@ export default function AdminDashboard() {
                   <tr className="bg-gray-100">
                     <th className="py-2 px-4 text-left">Bill ID</th>
                     <th className="py-2 px-4 text-left">Total Payment</th>
+                    <th className="py-2 px-4 text-left">Details</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -225,6 +203,14 @@ export default function AdminDashboard() {
                     <tr key={bill.id} className="border-b">
                       <td className="py-2 px-4">{bill.id}</td>
                       <td className="py-2 px-4">${bill.totalPayment}</td>
+                      <td className="py-2 px-4">
+                        <button
+                          className="text-blue-500 hover:underline"
+                          onClick={() => handleModalOpen(bill)}
+                        >
+                          View Details
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -233,6 +219,48 @@ export default function AdminDashboard() {
               <p>No recent activities to display.</p>
             )}
           </div>
+
+          {/* Modal for Bill Details */}
+          {isModalOpen && selectedBill && (
+            <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-50">
+              <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                <h2 className="text-2xl font-semibold mb-4">
+                  Bill Details - ID: {selectedBill.id}
+                </h2>
+                <p>
+                  <strong>Total Payment:</strong>{" "}
+                  {selectedBill.totalPayment.toLocaleString()} VND
+                </p>
+                <h3 className="mt-4 text-xl font-semibold">Course Details:</h3>
+                <table className="min-w-full table-auto mt-2">
+                  <thead>
+                    <tr className="bg-gray-100">
+                      <th className="py-2 px-4 text-left">Course Name</th>
+                      <th className="py-2 px-4 text-left">Price (VND)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedBill.billDetail.map((detail, index) => (
+                      <tr key={index} className="border-b">
+                        <td className="py-2 px-4">{detail.courseName}</td>
+                        <td className="py-2 px-4">
+                          {detail.price.toLocaleString()} VND
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div className="mt-4 flex justify-end">
+                  <button
+                    className="bg-red-500 text-white px-4 py-2 rounded-lg"
+                    onClick={handleModalClose}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

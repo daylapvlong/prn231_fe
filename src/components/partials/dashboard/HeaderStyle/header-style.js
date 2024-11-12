@@ -119,9 +119,6 @@ const HeaderStyle = memo(({ cartCount, fetchCartData }) => {
                   </Dropdown.Toggle>
                   <Dropdown.Menu as="ul" className="dropdown-menu-end">
                     <Dropdown.Item href="/user-profile">Profile</Dropdown.Item>
-                    <Dropdown.Item href="https://templates.iqonic.design/hope-ui/react/build/dashboard/app/user-privacy-setting">
-                      Privacy Setting
-                    </Dropdown.Item>
                     <Dropdown.Divider />
                     <Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
                   </Dropdown.Menu>

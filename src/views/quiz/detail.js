@@ -12,6 +12,7 @@ import {
   EyeClosed,
   X,
   Pen,
+  CircleGauge,
 } from "lucide-react";
 import axios from "axios";
 
@@ -65,6 +66,10 @@ const QuizDetail = () => {
 
   const handleUpdateQuiz = () => {
     navigate(`/update?courseId=${courseId}`);
+  };
+
+  const handleDashboardQuiz = () => {
+    navigate(`/quiz-dashboard?courseId=${courseId}`);
   };
 
   const toggleHideChoices = () => {
@@ -145,22 +150,23 @@ const QuizDetail = () => {
             <h1 className="text-3xl font-bold mb-2 text-blue-600">
               {courseName}
             </h1>
-            <div className="flex items-center space-x-4 text-gray-600">
-              <div className="flex items-center">
-                <Users className="w-5 h-5 mr-2" />
-                <span>26 người học gần đây</span>
-              </div>
-              <div className="flex items-center">
-                <Star className="w-5 h-5 mr-2" />
-                <span>Cho điểm đánh giá đầu tiên</span>
-              </div>
-            </div>
           </header>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div
+            className={`grid ${
+              userRole === "1" || hiddenChoices // condition to determine the number of items
+                ? "grid-cols-2 md:grid-cols-4"
+                : "grid-cols-1 md:grid-cols-3"
+            } gap-4 mb-6 justify-center`}
+          >
             {[
               { icon: Play, text: "Take quiz" },
-              { icon: RotateCcw, text: "Shuffle cards" },
+              ...(userRole === "2"
+                ? [{ icon: RotateCcw, text: "Shuffle cards" }]
+                : []),
+              ...(userRole === "1"
+                ? [{ icon: CircleGauge, text: "Dashboard" }]
+                : []),
               {
                 icon: hiddenChoices ? Eye : EyeClosed,
                 text: hiddenChoices ? "Show All Options" : "Hide All Options",
@@ -174,7 +180,10 @@ const QuizDetail = () => {
                   if (index === 0) {
                     handleStartQuiz();
                   }
-                  if (index === 1) {
+                  if (index === 1 && userRole === "1") {
+                    handleDashboardQuiz();
+                  }
+                  if (index === 1 && userRole === "2") {
                     handleShuffle();
                   }
                   if (index === 2) {

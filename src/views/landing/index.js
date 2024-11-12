@@ -52,18 +52,12 @@ export default function LandingPage() {
               Create, share, and take quizzes on any topic. Perfect for
               students, teachers, and lifelong learners.
             </p>
-            <button className="bg-white text-blue-600 font-bold py-3 px-8 rounded-full hover:bg-blue-100 transition duration-300">
+            <a
+              href="auth/sign-in"
+              className="bg-white text-blue-600 font-bold py-3 px-8 rounded-full hover:bg-blue-100 transition duration-300"
+            >
               Get Started Free
-            </button>
-          </div>
-          <div className="md:w-1/2">
-            <img
-              src="/placeholder.svg?height=400&width=600"
-              alt="Quiz App Screenshot"
-              width={600}
-              height={400}
-              className="rounded-lg shadow-2xl"
-            />
+            </a>
           </div>
         </div>
       </section>

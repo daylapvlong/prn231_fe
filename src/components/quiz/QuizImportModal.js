@@ -40,6 +40,7 @@ export default function QuizImportModal({ isOpen, onClose, courseId }) {
       // Handle successful import
       alert("Questions imported successfully");
       onClose();
+      window.location.reload();
     } catch (err) {
       setError(err.message);
     } finally {
